@@ -17,5 +17,22 @@ But this is possible. Here is how:
 
 ## Protocol
 
-I am using Zero Knowledge proofs of voting. The proover is written in Noir. Then the votes are verified and counted by the **interested** party incrementally in a recursive manner. For each new count, a new proof of total votes so far is created by taking the previous count proof and the current vote proof. Finally, the result can be recorded on-chain. The Smart Contract records the new count after verifying the correctness of it's proof. The recording can be incremental, and in addition the counting can be split (sharded) among several parties, for arbitrary speed-up (scaling) of this process. The devil is in the details, so let's see how this works:
+I am using Zero Knowledge (ZK) proofs of voting. The proover is written in Noir. Then the votes are verified and counted by the **interested** party incrementally in a recursive manner. For each new count, a new proof of total votes so far is created by taking the previous count proof and the current vote proof. Finally, the result can be recorded on-chain. The Smart Contract records the new count after verifying the correctness of it's proof. The recording can be incremental, and in addition the counting can be split (sharded) among several parties, for arbitrary speed-up (scaling) of this process. The devil is in the details, so let's see how this works:
 
+### Election or Referendum Initialization
+
+Upon initialization, the **Organizer** creates a Merkle Tree of all registered voters and distributes ballots to all registered voters in form of Merkle Paths of their public keys.
+But wait, the organizer can cheat by issuing extra ballots. To alleviate this they have to produce a ZK proof of the counting. In reality, if additional facts have to be proven, they would go into this proof.
+To achieve this we devise a proof of insertion into a Merkle Tree (described below). The Organizer starts from an empty Merkle Tree and for each added ballot, it creates a proof that the new Merkle Tree is a result
+of adding the ballot into the old Merkle Tree and incrementing the count by one. In other words:
+```
+v = 0
+t = empty Merkle Tree
+p = proof: empty Merkle Tree contains 0 votes
+for voter in voters
+  p1 = 
+```
+
+## Methods
+
+### Proof of Insertion into a Merkle Tree
