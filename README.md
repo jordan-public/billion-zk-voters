@@ -1,4 +1,4 @@
-# billion-zk-voters
+# Billion Zero Knowledge Voters
 Massive scale secret voting with on-chain results
 
 ## Abstract
