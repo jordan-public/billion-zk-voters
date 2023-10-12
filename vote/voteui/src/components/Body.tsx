@@ -43,7 +43,20 @@ console.log("sigHashBytes", sigHashBytes.length, sigHashBytes);
         const messageHash = ethers.getBytes(messageHashHex);
 console.log("messageHash", messageHash.length, messageHash);
 
-        // Natve way to recover public key
+
+        // As suggested in https://github.com/ethers-io/ethers.js/issues/447
+        // Then you must compute the prefixed-message hash
+        const messageHash2 = ethers.hashMessage(toSign);
+        console.log("messageHash2", messageHash2.length, messageHash2);
+        // Then you must make this binary
+        const messageHashBytes = ethers.getBytes(messageHash2);
+        // Now you have the digest,
+        const publicKey2 = ethers.SigningKey.recoverPublicKey(messageHashBytes, signature);
+        console.log("publicKey2", publicKey2.length, publicKey2);
+        const address2 = ethers.computeAddress(publicKey2);
+        console.log("address2", address2);
+
+        // Native way to recover public key
         const pubKeyRecoveredNative = ethers.SigningKey.recoverPublicKey(messageHash, signature);
         console.log("pubKeyRecoveredNative", pubKeyRecoveredNative.length, pubKeyRecoveredNative);
         const addressRecoveredNative = ethers.computeAddress(pubKeyRecoveredNative);
