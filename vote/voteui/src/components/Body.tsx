@@ -32,22 +32,15 @@ function Body({ signer, address } : BodyProps) {
         const recovered = ethers.verifyMessage(toSign, signature);
         console.log("Recovered signer", recovered);
 
-        const toSignHash = ethers.keccak256(ethers.toUtf8Bytes(toSign));
-        const sigHashBytes = ethers.getBytes(toSignHash);
-console.log("sigHashBytes", sigHashBytes.length, sigHashBytes);
-        const prefixBytes = ethers.toUtf8Bytes('\x19Ethereum Signed Message:\n\x32');
-        const prefixedMessageBytes = new Uint8Array(prefixBytes.length + sigHashBytes.length);
-        prefixedMessageBytes.set(prefixBytes);
-        prefixedMessageBytes.set(sigHashBytes, prefixBytes.length);
-        const messageHashHex = ethers.keccak256(prefixedMessageBytes);
-        const messageHash = ethers.getBytes(messageHashHex);
-console.log("messageHash", messageHash.length, messageHash);
-
+        const messageBytes = ethers.toUtf8Bytes('\x19Ethereum Signed Message:\n' + toSign.length.toString() + toSign);
+        const messageHash = ethers.keccak256(messageBytes);
+        console.log("messageHash", messageHash.length, messageHash);
 
         // As suggested in https://github.com/ethers-io/ethers.js/issues/447
         // Then you must compute the prefixed-message hash
         const messageHash2 = ethers.hashMessage(toSign);
         console.log("messageHash2", messageHash2.length, messageHash2);
+        console.log("messageHash2 === messageHash", messageHash2 === messageHash);
         // Then you must make this binary
         const messageHashBytes = ethers.getBytes(messageHash2);
         // Now you have the digest,
