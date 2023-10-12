@@ -70,6 +70,12 @@ function Body({ signer, address } : BodyProps) {
         const address = ethers.computeAddress(publicKey);
         
         console.log("address", address);
+
+        // Export as input paramters for Prover.toml
+        console.log("Pubkey X", JSON.stringify(Array.from(ethers.getBytes('0x' + pubKeyRecoveredNative.slice(4, 68)), byte => byte.toString())));
+        console.log("Pubkey Y", JSON.stringify(Array.from(ethers.getBytes('0x' + pubKeyRecoveredNative.slice(68, 132)), byte => byte.toString())));
+        console.log("Signature:", JSON.stringify(Array.from(ethers.getBytes(signature.slice(0, 130)), byte => byte.toString())));
+        console.log("Message hash:", JSON.stringify(Array.from(ethers.getBytes(messageHash2), byte => byte.toString())));
     }
 
     if (!signer) return(<><br/>Please connect!</>)
