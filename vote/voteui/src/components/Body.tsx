@@ -43,10 +43,16 @@ console.log("sigHashBytes", sigHashBytes.length, sigHashBytes);
         const messageHash = ethers.getBytes(messageHashHex);
 console.log("messageHash", messageHash.length, messageHash);
 
+        // Natve way to recover public key
+        const pubKeyRecoveredNative = ethers.SigningKey.recoverPublicKey(messageHash, signature);
+        console.log("pubKeyRecoveredNative", pubKeyRecoveredNative.length, pubKeyRecoveredNative);
+        const addressRecoveredNative = ethers.computeAddress(pubKeyRecoveredNative);
+        console.log("addressRecoveredNative", addressRecoveredNative);
+
         const ec = new EC("secp256k1");
         // Use the elliptic library to recover the public key
         const pubKeyRecovered = ec.recoverPubKey(
-            ethers.toUtf8Bytes(messageHashHex),
+            messageHash,
             { r: signature.slice(2, 66), s: signature.slice(66,130) },
             parseInt(signature.slice(130, 132), 16) - 27  // the library expects 0 or 1, so subtract 27
         );
