@@ -15,7 +15,6 @@
     "@types/node": "^12.20.55",
     "@types/react": "^18.2.28",
     "@types/react-dom": "^18.2.13",
-    "elliptic": "^6.5.4",
     "ethers": "^6.8.0",
     "framer-motion": "^6.5.1",
     "react": "^18.2.0",
