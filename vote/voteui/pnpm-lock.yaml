@@ -14,6 +14,12 @@ dependencies:
   '@emotion/styled':
     specifier: ^11.11.0
     version: 11.11.0(@emotion/react@11.11.1)(@types/react@18.2.28)(react@18.2.0)
+  '@noir-lang/backend_barretenberg':
+    specifier: ^0.7.10
+    version: 0.7.10
+  '@noir-lang/noir_js':
+    specifier: ^0.16.0
+    version: 0.16.0
   '@testing-library/jest-dom':
     specifier: ^5.17.0
     version: 5.17.0
@@ -106,6 +112,18 @@ packages:
       json-schema: 0.4.0
       jsonpointer: 5.0.1
       leven: 3.1.0
+    dev: false
+
+  /@aztec/bb.js@0.7.10:
+    resolution: {integrity: sha512-tKfv0iGEysBLLQBl01lafd1DlPH01rYjKagGHWuDCxQi/SbKA6+5+5k1jWHLr7TXNkqCEexXwaURAcQv8mbETw==}
+    hasBin: true
+    dependencies:
+      comlink: 4.4.1
+      commander: 10.0.1
+      debug: 4.3.4
+      tslib: 2.6.2
+    transitivePeerDependencies:
+      - supports-color
     dev: false
 
   /@babel/code-frame@7.22.13:
@@ -3355,6 +3373,40 @@ packages:
       fastq: 1.15.0
     dev: false
 
+  /@noir-lang/acvm_js@0.28.0:
+    resolution: {integrity: sha512-h2SPAFHOeW/BxBfaBJrs1XJUcmj+ItDaHmvwZzZ4qDnzMGPFiwmWRWcp6iWbQIbYQyc1QH0wSE/Z497Ajm0OdA==}
+    dev: false
+
+  /@noir-lang/backend_barretenberg@0.7.10:
+    resolution: {integrity: sha512-ag5X3SvNOj4T8YT6uTssSICdGBxi+aTvtMoyOUg3DeFvWjFhYTj5ZEdsB0X9Geu2nlpN52fDo4RS69MSqP1Wog==}
+    peerDependencies:
+      '@noir-lang/backend_barretenberg': 0.7.10
+    dependencies:
+      '@aztec/bb.js': 0.7.10
+      '@noir-lang/backend_barretenberg': 0.7.10
+      '@noir-lang/types': 0.14.1
+      fflate: 0.8.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /@noir-lang/noir_js@0.16.0:
+    resolution: {integrity: sha512-rImnIIO3+C0XtDkncvO3g3vjwaE/tDerDLv4ZNeWWzBUTvKCruIM/dCqJIBlHwGa7A7DWAZEn86oPNLhNCY9bg==}
+    dependencies:
+      '@noir-lang/acvm_js': 0.28.0
+      '@noir-lang/noirc_abi': 0.16.0
+      '@noir-lang/types': 0.14.1
+      fflate: 0.8.1
+    dev: false
+
+  /@noir-lang/noirc_abi@0.16.0:
+    resolution: {integrity: sha512-ybtgiBqCV1bUhszqpBwfCZ25B07Bpp6jWt645vpdqSRwnWCC3w/KdEKIJVu5dDAX3GH0Br2vItgu2KE+rtL2PQ==}
+    dev: false
+
+  /@noir-lang/types@0.14.1:
+    resolution: {integrity: sha512-8FtL9SsQaEzoyyAjzzs7LJO6ognODGBj+ddlaydCD7mHveGqZlViDJhfHEpWOA8mysLQQ5lrL2Xg5uGWZx/l+Q==}
+    dev: false
+
   /@pmmmwh/react-refresh-webpack-plugin@0.5.11(react-refresh@0.11.0)(webpack-dev-server@4.15.1)(webpack@5.88.2):
     resolution: {integrity: sha512-7j/6vdTym0+qZ6u4XbSAxrWBGYSdCfTzySkj7WAFgDLmSyWlOrWvpyzxlFh5jtw9dn0oL/jtW+06XfFiisN3JQ==}
     engines: {node: '>= 10.13'}
@@ -5105,6 +5157,15 @@ packages:
       delayed-stream: 1.0.0
     dev: false
 
+  /comlink@4.4.1:
+    resolution: {integrity: sha512-+1dlx0aY5Jo1vHy/tSsIGpSkN4tS9rZSW8FIhG0JH/crs9wwweswIo/POr451r7bZww3hFbPAKnTpimzL/mm4Q==}
+    dev: false
+
+  /commander@10.0.1:
+    resolution: {integrity: sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==}
+    engines: {node: '>=14'}
+    dev: false
+
   /commander@2.20.3:
     resolution: {integrity: sha512-GpVkmM8vF2vQUkj2LvZmD35JxeJOLCwJ9cUkugyk2nuhbv3+mJvpLYYt+0+USMxE+oj+ey/lJEnhZw75x/OMcQ==}
     dev: false
@@ -6554,6 +6615,10 @@ packages:
     resolution: {integrity: sha512-p5161BqbuCaSnB8jIbzQHOlpgsPmK5rJVDfDKO91Axs5NC1uu3HRQm6wt9cd9/+GtQQIO53JdGXXoyDpTAsgYA==}
     dependencies:
       bser: 2.1.1
+    dev: false
+
+  /fflate@0.8.1:
+    resolution: {integrity: sha512-/exOvEuc+/iaUm105QIiOt4LpBdMTWsXxqR0HDF35vx3fmaKzw7354gTilCh5rkzEt8WYyG//ku3h3nRmd7CHQ==}
     dev: false
 
   /file-entry-cache@6.0.1:
