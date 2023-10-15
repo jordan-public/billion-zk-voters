@@ -1,0 +1,123 @@
+lockfileVersion: '6.0'
+
+settings:
+  autoInstallPeers: true
+  excludeLinksFromLockfile: false
+
+dependencies:
+  '@noir-lang/backend_barretenberg':
+    specifier: ^0.7.10
+    version: 0.7.10
+  '@noir-lang/noir_js':
+    specifier: ^0.16.0
+    version: 0.16.0
+
+devDependencies:
+  '@types/es6-promise':
+    specifier: ^3.3.0
+    version: 3.3.0
+  '@types/node':
+    specifier: ^20.8.6
+    version: 20.8.6
+
+packages:
+
+  /@aztec/bb.js@0.7.10:
+    resolution: {integrity: sha512-tKfv0iGEysBLLQBl01lafd1DlPH01rYjKagGHWuDCxQi/SbKA6+5+5k1jWHLr7TXNkqCEexXwaURAcQv8mbETw==}
+    hasBin: true
+    dependencies:
+      comlink: 4.4.1
+      commander: 10.0.1
+      debug: 4.3.4
+      tslib: 2.6.2
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /@noir-lang/acvm_js@0.28.0:
+    resolution: {integrity: sha512-h2SPAFHOeW/BxBfaBJrs1XJUcmj+ItDaHmvwZzZ4qDnzMGPFiwmWRWcp6iWbQIbYQyc1QH0wSE/Z497Ajm0OdA==}
+    dev: false
+
+  /@noir-lang/backend_barretenberg@0.7.10:
+    resolution: {integrity: sha512-ag5X3SvNOj4T8YT6uTssSICdGBxi+aTvtMoyOUg3DeFvWjFhYTj5ZEdsB0X9Geu2nlpN52fDo4RS69MSqP1Wog==}
+    peerDependencies:
+      '@noir-lang/backend_barretenberg': 0.7.10
+    dependencies:
+      '@aztec/bb.js': 0.7.10
+      '@noir-lang/backend_barretenberg': 0.7.10
+      '@noir-lang/types': 0.14.1
+      fflate: 0.8.1
+    transitivePeerDependencies:
+      - supports-color
+    dev: false
+
+  /@noir-lang/noir_js@0.16.0:
+    resolution: {integrity: sha512-rImnIIO3+C0XtDkncvO3g3vjwaE/tDerDLv4ZNeWWzBUTvKCruIM/dCqJIBlHwGa7A7DWAZEn86oPNLhNCY9bg==}
+    dependencies:
+      '@noir-lang/acvm_js': 0.28.0
+      '@noir-lang/noirc_abi': 0.16.0
+      '@noir-lang/types': 0.14.1
+      fflate: 0.8.1
+    dev: false
+
+  /@noir-lang/noirc_abi@0.16.0:
+    resolution: {integrity: sha512-ybtgiBqCV1bUhszqpBwfCZ25B07Bpp6jWt645vpdqSRwnWCC3w/KdEKIJVu5dDAX3GH0Br2vItgu2KE+rtL2PQ==}
+    dev: false
+
+  /@noir-lang/types@0.14.1:
+    resolution: {integrity: sha512-8FtL9SsQaEzoyyAjzzs7LJO6ognODGBj+ddlaydCD7mHveGqZlViDJhfHEpWOA8mysLQQ5lrL2Xg5uGWZx/l+Q==}
+    dev: false
+
+  /@types/es6-promise@3.3.0:
+    resolution: {integrity: sha512-ixCIAEkLUKv9movnHKCzx2rzAJgEnSALDXPrOSSwOjWwXFs0ssSZKan+O2e3FExPPCbX+DfA9NcKsbvLuyUlNA==}
+    deprecated: This is a stub types definition for es6-promise (https://github.com/jakearchibald/ES6-Promise). es6-promise provides its own type definitions, so you don't need @types/es6-promise installed!
+    dependencies:
+      es6-promise: 4.2.8
+    dev: true
+
+  /@types/node@20.8.6:
+    resolution: {integrity: sha512-eWO4K2Ji70QzKUqRy6oyJWUeB7+g2cRagT3T/nxYibYcT4y2BDL8lqolRXjTHmkZCdJfIPaY73KbJAZmcryxTQ==}
+    dependencies:
+      undici-types: 5.25.3
+    dev: true
+
+  /comlink@4.4.1:
+    resolution: {integrity: sha512-+1dlx0aY5Jo1vHy/tSsIGpSkN4tS9rZSW8FIhG0JH/crs9wwweswIo/POr451r7bZww3hFbPAKnTpimzL/mm4Q==}
+    dev: false
+
+  /commander@10.0.1:
+    resolution: {integrity: sha512-y4Mg2tXshplEbSGzx7amzPwKKOCGuoSRP/CjEdwwk0FOGlUbq6lKuoyDZTNZkmxHdJtp54hdfY/JUrdL7Xfdug==}
+    engines: {node: '>=14'}
+    dev: false
+
+  /debug@4.3.4:
+    resolution: {integrity: sha512-PRWFHuSU3eDtQJPvnNY7Jcket1j0t5OuOsFzPPzsekD52Zl8qUfFIPEiswXqIvHWGVHOgX+7G/vCNNhehwxfkQ==}
+    engines: {node: '>=6.0'}
+    peerDependencies:
+      supports-color: '*'
+    peerDependenciesMeta:
+      supports-color:
+        optional: true
+    dependencies:
+      ms: 2.1.2
+    dev: false
+
+  /es6-promise@4.2.8:
+    resolution: {integrity: sha512-HJDGx5daxeIvxdBxvG2cb9g4tEvwIk3i8+nhX0yGrYmZUzbkdg8QbDevheDB8gd0//uPj4c1EQua8Q+MViT0/w==}
+    dev: true
+
+  /fflate@0.8.1:
+    resolution: {integrity: sha512-/exOvEuc+/iaUm105QIiOt4LpBdMTWsXxqR0HDF35vx3fmaKzw7354gTilCh5rkzEt8WYyG//ku3h3nRmd7CHQ==}
+    dev: false
+
+  /ms@2.1.2:
+    resolution: {integrity: sha512-sGkPx+VjMtmA6MX27oA4FBFELFCZZ4S4XqeGOXCv68tT+jb3vk/RyaKWP0PTKyWtmLSM0b+adUTEvbs1PEaH2w==}
+    dev: false
+
+  /tslib@2.6.2:
+    resolution: {integrity: sha512-AEYxH93jGFPn/a2iVAwW87VuUIkR1FVUKB77NwMF7nBTDkDrrT/Hpt/IrCJ0QXhW27jTBDcf5ZY7w6RiqTMw2Q==}
+    dev: false
+
+  /undici-types@5.25.3:
+    resolution: {integrity: sha512-Ga1jfYwRn7+cP9v8auvEXN1rX3sWqlayd4HP7OKk4mZWylEmu3KzXDUGrQUN6Ol7qo1gPvB2e5gX6udnyEPgdA==}
+    dev: true
