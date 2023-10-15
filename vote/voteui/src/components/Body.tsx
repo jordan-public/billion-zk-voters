@@ -127,12 +127,7 @@ function Body({ signer, address } : BodyProps) {
     }, [noir]);
 
     if (!signer) return(<><br/>Please connect!</>)
-    return (<Flex
-            height="100vh"
-            width="100vw"
-            alignItems="center"
-            justifyContent="center"
-        >
+    return (<Flex height="100vh" width="100vw" alignItems="center" justifyContent="center">
             <Box>
                 <InputGroup>
                     <InputLeftAddon color="black" children='Issue' />
