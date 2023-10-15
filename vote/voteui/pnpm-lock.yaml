@@ -66,11 +66,6 @@ dependencies:
     specifier: ^2.1.4
     version: 2.1.4
 
-devDependencies:
-  '@types/elliptic':
-    specifier: ^6.4.15
-    version: 6.4.15
-
 packages:
 
   /@aashutoshrathi/word-wrap@1.2.6:
@@ -3749,12 +3744,6 @@ packages:
       '@babel/types': 7.23.0
     dev: false
 
-  /@types/bn.js@5.1.2:
-    resolution: {integrity: sha512-dkpZu0szUtn9UXTmw+e0AJFd4D2XAxDnsCLdc05SfqpqzPEBft8eQr8uaFitfo/dUUOZERaLec2hHMG87A4Dxg==}
-    dependencies:
-      '@types/node': 12.20.55
-    dev: true
-
   /@types/body-parser@1.19.3:
     resolution: {integrity: sha512-oyl4jvAfTGX9Bt6Or4H9ni1Z447/tQuxnZsytsCaExKlmJiU8sFgnIBRzJUpKwB5eWn9HuBYlUlVA74q/yN0eQ==}
     dependencies:
@@ -3780,12 +3769,6 @@ packages:
     dependencies:
       '@types/node': 12.20.55
     dev: false
-
-  /@types/elliptic@6.4.15:
-    resolution: {integrity: sha512-tW9Z/mrlymYEbx/WWcO/Kkly0VxqPNaf/p3KcZTYKI282ZX+50efZvY/p6FoMuTpFq+QMyABQNfs6OXvdmVUhQ==}
-    dependencies:
-      '@types/bn.js': 5.1.2
-    dev: true
 
   /@types/eslint-scope@3.7.5:
     resolution: {integrity: sha512-JNvhIEyxVW6EoMIFIvj93ZOywYFatlpu9deeH6eSx6PE3WHYvHaQtmHmQeNw7aA81bYGBPPQqdtBm6b1SsQMmA==}
@@ -3898,6 +3881,7 @@ packages:
 
   /@types/node@12.20.55:
     resolution: {integrity: sha512-J8xLz7q2OFulZ2cyGTLE1TbbZcjpno7FaN6zdJNrgAdrJ+DZzh/uFR6YrTb4C+nXakvud8Q4+rbhoIWlYQbUFQ==}
+    dev: false
 
   /@types/node@18.15.13:
     resolution: {integrity: sha512-N+0kuo9KgrUQ1Sn/ifDXsvg0TTleP7rIy4zOBGECxAljqvqfqpTfzx0Q1NUedOixRMBfe2Whhb056a42cWs26Q==}
