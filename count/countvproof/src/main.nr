@@ -2,11 +2,11 @@ use dep::std;
 
 fn main(
     verification_key : [Field; 114], 
-    proof : [Field; 94], 
-    public_inputs : [Field; 1], 
+    proof : [Field; 93], 
+    public_inputs : [Field; 0], 
     key_hash : Field, 
     input_aggregation_object : [Field; 16],
-    proof_b : [Field; 94],
+    proof_b : [Field; 93],
 ) -> pub [Field; 16] {
     let output_aggregation_object_a = std::verify_proof(
         verification_key.as_slice(), 
