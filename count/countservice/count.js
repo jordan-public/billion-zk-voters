@@ -92,7 +92,7 @@ const verifyCountProof = async () => {
         const verification = await countBackend.verifyFinalProof(countProof);
         console.log('Proof verified as', verification);
         //countBackend!.destroy();
-        countBackend.destroy();
+        await countBackend.destroy();
     }
 };
 
