@@ -24,13 +24,13 @@ const calculateVoteProof = async () => {
     const vote = new Noir(voteCircuit, backends.vote);
     await vote.init();
 
-    const numPublicInputs = 0;
+    const numPublicInputs = 3;
     console.log('generating vote proof');
-    input = { junk: 1 };
+    input = { junk: 1, pubjunk: [1, 2, 3] };
     console.log("input:", input);
     const voteWitness = await generateWitness(voteCircuit, input);
     voteProof = await backends.vote.generateIntermediateProof(voteWitness);
-    console.log('vote proof generated: ', voteProof);
+    //console.log('vote proof generated: ', voteProof);
 
     // Verify the same proof, not inside of a circuit
     console.log('verifying vote proof (out of circuit)');
@@ -54,13 +54,13 @@ const calculateCountProof = async () => {
     const count = new Noir(countCircuit, countBackend);
     await count.init()
 
-    console.log("proofArtifacts: ", proofArtifacts);
+    //console.log("proofArtifacts: ", proofArtifacts);
 
     //const { proofAsFields, vkAsFields, vkHash } = proofArtifacts!
     const { proofAsFields, vkAsFields, vkHash } = proofArtifacts;
-    console.log('Proof as Fields: ', proofAsFields);
-    console.log('Vk as Fields: ', vkAsFields);
-    console.log('Vk Hash: ', vkHash);
+    // console.log('Proof as Fields: ', proofAsFields);
+    // console.log('Vk as Fields: ', vkAsFields);
+    // console.log('Vk Hash: ', vkHash);
     const aggregationObject = Array(16).fill(
         '0x0000000000000000000000000000000000000000000000000000000000000000',
     );
@@ -68,13 +68,13 @@ const calculateCountProof = async () => {
         verification_key: vkAsFields.map(e => e.toString()),
         proof: proofAsFields,
         //public_inputs: [input!["junk"]],
-        public_inputs: [],
+        public_inputs: [input["pubjunk"][0], input["pubjunk"][1], input["pubjunk"][2]],
         key_hash: vkHash,
         input_aggregation_object: aggregationObject,
         proof_b: proofAsFields,
     }
 
-    console.log("count input", countInput)
+    //console.log("count input", countInput)
     console.log('generating witnesses for count proof');
     console.log("countInput.proof.length:", countInput.proof.length)
     const countWitness = await generateWitness(countCircuit, countInput);
