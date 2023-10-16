@@ -24,9 +24,9 @@ const calculateVoteProof = async () => {
     const vote = new Noir(voteCircuit, backends.vote);
     await vote.init();
 
-    const numPublicInputs = 3;
+    const numPublicInputs = 4;
     console.log('generating vote proof');
-    input = { junk: 1, pubjunk: [1, 2, 3] };
+    input = { junk: 1, pubjunk: [1, 2, 3], pubjunk2: 1 };
     console.log("input:", input);
     const voteWitness = await generateWitness(voteCircuit, input);
     voteProof = await backends.vote.generateIntermediateProof(voteWitness);
@@ -68,7 +68,7 @@ const calculateCountProof = async () => {
         verification_key: vkAsFields.map(e => e.toString()),
         proof: proofAsFields,
         //public_inputs: [input!["junk"]],
-        public_inputs: [input["pubjunk"][0], input["pubjunk"][1], input["pubjunk"][2]],
+        public_inputs: [input["pubjunk"][0], input["pubjunk"][1], input["pubjunk"][2], input["pubjunk2"]],
         key_hash: vkHash,
         input_aggregation_object: aggregationObject,
         proof_b: proofAsFields,
