@@ -11,6 +11,7 @@
 # production
 /build
 /crs
+/artifacts
 
 # misc
 .DS_Store
