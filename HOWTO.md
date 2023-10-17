@@ -7,7 +7,9 @@ The system consists of several components:
 
 ## Vote
 
-Install the web application:
+### Web application
+
+To install:
 ```
 cd vote
 # Compile the vote zk prover
@@ -25,6 +27,8 @@ and use a browser with MetaMask installed to open ```http://localhost:3000```.
 
 ## Count
 
+### Counting application
+
 Install the counting application, including the recursive count validity prover:
 ```
 cd count\countservice
@@ -39,7 +43,25 @@ SHARD=0 node count.js
 
 ## Display
 
-To install the smart contracts:
+### Environment
+
+First set up the proper environment values:
+```
+cd display/display
+cp .env.example .env
+```
+and edit the file ```.env``` appropriately.
+
+To install the vote sum validity prover:
+```
+cd display/sumvproof
+./install.sh
+cp 
+```
+
+### Smart Contracts:
+
+To install the Smart Contracts,
 
 On testnets:
 ```
@@ -59,14 +81,32 @@ cd display
 ./deployAnvil.sh
 ```
 
-To install the result display web application:
+### Display Service etc.
 
-Set up the proper environment values:
+To install the display service which is used for:
+- Creating an issue / election / referendum
+- Displaying the voting results
+
 ```
-cd display/display
-cp .env.example .env
+cd display/displayservice
+pnpm install
+./install.sh
 ```
-and edit the file ```.env``` appropriately.
+
+To create a new issue / election / referendum in the ```display/displayservice```, for example "To be or not to be" with voting choices "Not to be" and "To be" with 1 shard for the counting service and deadline for voting January 1, 2024 at midnight UTC:
+```
+node createIssue.js "To be or not to be|Not to be|To be" 1 1704085200
+```
+where 1704085200 represents Unix time for January 1, 2024 at midnight UTC.
+
+finally, as people vote in the web application ```http://localhost:3000``` the voting results are displayed in the web application ```http://localhost:3001``` (once this application is installed at the end of this writeup). However, occasionally, the results of the ongoing counting have to be published on the blockchain. To do this, for each shard, in a loop, typically each 10 minutes, the following would publish to the blockchain, for shard 1:
+```
+node pushCount.js 1
+```
+
+### Result Display
+
+To install the result display web application:
 
 ```
 cd display/displayui
@@ -79,25 +119,7 @@ PORT=3001 pnpm start
 ```
 and use a browser with to open ```http://localhost:3001```
 
-To install the display service which is used for:
-- Creating an issue / election / referendum
-- Displaying the voting results
 
-```
-cd display/displayservice
-pnpm install
-./install.sh
-```
-
-Now to create a new issue / election / referendum in the ```display/displayservice```, for example "To be or not to be" with voting choices "Not to be" and "To be" with 1 shard for the counting service and deadline for voting January 1, 2024 at midnight UTC:
-```
-node createIssue.js "To be or not to be|Not to be|To be" 1 1704085200
-```
-where 1704085200 represents Unix time for January 1, 2024 at midnight UTC. 
-
-finally, as people vote in the web application ```http://localhost:3000``` the voting results are displayed in the web application ```http://localhost:3001```. However, occasionally, the results of the ongoing counting have to be published on the blockchain. To do this, for each shard, in a loop, typically each 10 minutes, the following would publish to the blockchain, for shard 1:
-```
-node pushCount.js 1
-```
+## Demo
 
 For better understanding see the in the [demo](./demo/README.md) folder.
