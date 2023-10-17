@@ -1,5 +1,5 @@
 {
-  "name": "countservice",
+  "name": "displayservice",
   "version": "1.0.0",
   "type": "module",
   "description": "",
@@ -12,7 +12,8 @@
   "license": "ISC",
   "dependencies": {
     "@noir-lang/backend_barretenberg": "^0.7.10",
-    "@noir-lang/noir_js": "^0.16.0"
+    "@noir-lang/noir_js": "^0.16.0",
+    "ethers": "^6.8.0"
   },
   "devDependencies": {
     "@types/es6-promise": "^3.3.0",

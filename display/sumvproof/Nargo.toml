@@ -1,5 +1,5 @@
 [package]
-name = "totalzkproof"
+name = "sumvproof"
 type = "bin"
 authors = [""]
 compiler_version = "0.11.0"
