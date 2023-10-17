@@ -19,6 +19,7 @@ contract AggregateCounts {
 
     mapping (uint256=>issue) public issues; // issueId => issue
 
+    // Anyone can create and issue an issueId, but the issueId must be unique
     function createIssue(uint256 issueId, uint256 numCandidates, uint256 numShards, uint256 descriptionHash, uint256 deadline, IVerifier verifier) public {
         require(issues[issueId].numShards == 0, "issueId already exists");
         require(numCandidates > 0, "numCandidates must be positive");

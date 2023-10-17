@@ -16,6 +16,14 @@ jq -s \
     select(.transactionType == "CREATE" and .contractName == "AggregateCounts") |
     {contractName, contractAddress}) * {abi: .abi}' > displayui/src/artifacts/AggregateCounts.json
 
+cat broadcast/$1/run-latest.json out/Verifier.sol/Verifier.json | \
+jq -s \
+    'add | 
+    { chain: .chain} * (.transactions[] |
+    { transactionType, contractName, contractAddress } |
+    select(.transactionType == "CREATE" and .contractName == "Verifier") |
+    {contractName, contractAddress}) * {abi: .abi}' > displayui/src/artifacts/Verifier.json
+
 cat broadcast/$1/run-latest.json out/MockVerifier.sol/MockVerifier.json | \
 jq -s \
     'add | 

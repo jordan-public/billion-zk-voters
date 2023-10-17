@@ -1,18 +1,23 @@
 {
   "chain": 31337,
-  "contractName": "MockVerifier",
-  "contractAddress": "0xaF4cF2Fdd4518615fCd7C82B1b4a9c5818296C26",
+  "contractName": "Verifier",
+  "contractAddress": "0x913d673428f0c24803EF612213d0760B5799C833",
   "abi": [
+    {
+      "inputs": [],
+      "stateMutability": "nonpayable",
+      "type": "constructor"
+    },
     {
       "inputs": [
         {
           "internalType": "bytes",
-          "name": "",
+          "name": "_proof",
           "type": "bytes"
         },
         {
           "internalType": "bytes32[]",
-          "name": "",
+          "name": "_publicInputs",
           "type": "bytes32[]"
         }
       ],
@@ -24,7 +29,7 @@
           "type": "bool"
         }
       ],
-      "stateMutability": "pure",
+      "stateMutability": "view",
       "type": "function"
     }
   ]

@@ -5,6 +5,7 @@ import "forge-std/Script.sol";
 import "forge-std/console.sol";
 import "../src/MockVerifier.sol";
 import "../src/AggregateCounts.sol";
+import "../src/Verifier.sol";
 
 contract Deploy is Script {
     // Test accounts from passphrase in env (not in repo)
@@ -19,9 +20,15 @@ contract Deploy is Script {
 
         console.log("Creator (owner): ", msg.sender);
 
-        MockVerifier v = new MockVerifier();
+        MockVerifier mv = new MockVerifier();
         console.log(
             "MockVerifier deployed: ",
+            address(mv)
+        );
+
+        Verifier v = new Verifier();
+        console.log(
+            "Verifier deployed: ",
             address(v)
         );
 
