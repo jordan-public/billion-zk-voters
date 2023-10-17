@@ -1,7 +1,7 @@
 {
   "chain": 31337,
   "contractName": "AggregateCounts",
-  "contractAddress": "0x56FA697d65c52aFe51d406F580671632d30b7F05",
+  "contractAddress": "0xcA98b5d882614d7CF4aF6E46bb07B691Dc138239",
   "abi": [
     {
       "inputs": [
