@@ -1,4 +1,6 @@
-See demo [here](./demo/README.md)
+See demo [here](./demo/README.md).
+
+Installation instructions [here](./HOWTO.md).
 
 # Billion Secret Voters
 Massive scale secret voting with on-chain results
