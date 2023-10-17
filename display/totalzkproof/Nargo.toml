@@ -1,0 +1,7 @@
+[package]
+name = "totalzkproof"
+type = "bin"
+authors = [""]
+compiler_version = "0.11.0"
+
+[dependencies]

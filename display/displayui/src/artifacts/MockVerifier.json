@@ -1,7 +1,7 @@
 {
   "chain": 31337,
   "contractName": "MockVerifier",
-  "contractAddress": "0x1cCb924Fb0EC2aAb705Ac0539149eE50B99D5632",
+  "contractAddress": "0xe7a044e19D5afbB2957740a3Cdc3E295F152CF7E",
   "abi": [
     {
       "inputs": [
