@@ -6,10 +6,10 @@ nargo compile
 nargo prove
 nargo verify
 popd
-mkdir -p artifacts
-cp ../mockvotezkproof/target/* artifacts/
+mkdir -p circuits
+cp ../mockvotezkproof/target/* circuits/
 pushd ../countvproof/
 nargo check
 nargo compile
 popd
-cp ../countvproof/target/* artifacts/
+cp ../countvproof/target/* circuits/

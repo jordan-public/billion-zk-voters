@@ -1,10 +1,9 @@
 import { Noir, generateWitness } from '@noir-lang/noir_js';
 import { BarretenbergBackend } from '@noir-lang/backend_barretenberg';
-import voteCircuit from './artifacts/mockvotezkproof.json' assert { type: 'json' };
-import countCircuit from './artifacts/countvproof.json' assert { type: 'json' };
+import voteCircuit from './circuits/mockvotezkproof.json' assert { type: 'json' };
+import countCircuit from './circuits/countvproof.json' assert { type: 'json' };
 
 //import { BackendInstances, ProofArtifacts } from './types';
-//import { ethers } from 'ethers';
 
 let countBackend;
 let input;
