@@ -4,22 +4,28 @@ import { Flex, Button, Text, Box, InputGroup, InputLeftAddon, Input, RadioGroup,
 import { ethers } from 'ethers'
 import { Noir, generateWitness } from '@noir-lang/noir_js'
 import { BarretenbergBackend } from '@noir-lang/backend_barretenberg';
-import circuit from '../artifacts/votezkproof.json'
-import { read } from 'fs';
+import circuit from '../circuits/votezkproof.json'
 interface BodyProps {
     signer: ethers.Signer | null;
     address: string | null;
 }
 
 function Body({ signer, address } : BodyProps) {
-    const [issue, setIssue] = React.useState<string>('To be or not to be?')
+    const [issue, setIssue] = React.useState<string>('To be or not to be?|Not to be.|To be.')
     const [voteFor, setVoteFor] = React.useState<number | null>(null)
     const [input, setInput] = React.useState<any>(null);
     const [proof, setProof] = React.useState(Uint8Array.from([]));
     const [noir, setNoir] = React.useState(new Noir(circuit, new BarretenbergBackend(circuit, 8)));
-  
-    const candidates = ['Not to be', 'To be'];
+    const [issueTitle, setIssueTitle] = React.useState<string>('');
+    const [candidates, setCandidates] = React.useState<string[]>([]);
 
+    React.useEffect(() => {
+        if (!issue) return;
+        const split = issue.split('|');
+        setIssueTitle(split[0]);
+        setCandidates(split.slice(1));
+    }, [issue]);
+  
     const toast = useToast();
 
     const castVote = async () => {
@@ -40,6 +46,9 @@ function Body({ signer, address } : BodyProps) {
         const recoveredSigner = ethers.verifyMessage(toSign, signature);
         console.log("Recovered signer", recoveredSigner);
 
+        const signatureBytes = ethers.getBytes(signature.slice(0, 130));
+        const nullifier = ethers.keccak256(signatureBytes);
+        
         const messageBytes = ethers.toUtf8Bytes('\x19Ethereum Signed Message:\n' + toSign.length.toString() + toSign);
         const messageHash = ethers.keccak256(messageBytes);
         console.log("messageHash", messageHash.length, messageHash);
@@ -57,6 +66,7 @@ function Body({ signer, address } : BodyProps) {
         console.log("signature", JSON.stringify(Array.from(ethers.getBytes(signature.slice(0, 130)), byte => byte.toString())));
         console.log("message_hash", JSON.stringify(Array.from(ethers.getBytes(messageHash), byte => byte.toString())));
         console.log("address", JSON.stringify(Array.from(ethers.getBytes(addressRecovered), byte => byte.toString())));
+        console.log("nullifier", JSON.stringify(Array.from(ethers.getBytes(nullifier), byte => byte.toString())));
 
         setInput({
             public_key_x: Array.from(ethers.getBytes('0x' + pubKey.slice(4, 68)), byte => byte.toString()),
@@ -64,6 +74,7 @@ function Body({ signer, address } : BodyProps) {
             signature: Array.from(ethers.getBytes(signature.slice(0, 130)), byte => byte.toString()),
             message_hash: Array.from(ethers.getBytes(messageHash), byte => byte.toString()),
             address: Array.from(ethers.getBytes(addressRecovered), byte => byte.toString()),
+            nullifier: Array.from(ethers.getBytes(nullifier), byte => byte.toString()),
         });
     }
 
@@ -72,10 +83,9 @@ function Body({ signer, address } : BodyProps) {
         if (!input) return;
         (async () => {
             const calc = new Promise(async (resolve, reject) => {
-                // const witness = await generateWitness(circuit, input);
-                // const proof = await noir.generateProof(witness);
                 const before = Date.now();
                 const proof = await noir.generateFinalProof(input);
+console.log("proof", proof);
                 console.log("Proof generated in", (Date.now() - before)/1000, "s");
                 setProof(proof);
                 resolve(proof);
@@ -95,6 +105,7 @@ function Body({ signer, address } : BodyProps) {
                 if (!proof) return;
                 const before = Date.now();
                 const verification = await noir.verifyFinalProof(proof);
+console.log("verification", verification);
                 console.log("Proof verified in", (Date.now() - before)/1000, "s");
                 resolve(verification);
             });
@@ -133,6 +144,8 @@ function Body({ signer, address } : BodyProps) {
                     <InputLeftAddon color="black" children='Issue' />
                     <Input placeholder='type issue ID number here' value={issue} onChange={(e) => setIssue(e.target.value)}/>
                 </InputGroup>
+                <br/><br/><br/><br/><br/>
+                <Text>Issue: {issueTitle}</Text>
                 <Box border={1} borderRadius={5} p={5} m={5}>
                 <RadioGroup onChange={(s) => setVoteFor(parseInt(s))} value={voteFor?.toString()}>
                 <VStack align='start' spacing={4}>

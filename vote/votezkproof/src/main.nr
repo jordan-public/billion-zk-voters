@@ -1,6 +1,6 @@
 use dep::std;
 
-fn main(public_key_x : [u8; 32], public_key_y : [u8; 32], signature: [u8; 64], message_hash: [u8; 32], address: [u8; 20]) -> pub [u8; 32] {
+fn main(public_key_x : [u8; 32], public_key_y : [u8; 32], signature: [u8; 64], message_hash: pub [u8; 32], address: [u8; 20], nullifier : pub [u8; 32]) {
     // Verify signature of the vote. The vote is signed by the voter's private key.
     // The message is keccak256('\x19Ethereum Signed Message:\n' + toSign.length.toString() + toSign),
     // where toSign is issue + vote.toString.
@@ -21,9 +21,11 @@ fn main(public_key_x : [u8; 32], public_key_y : [u8; 32], signature: [u8; 64], m
         assert(hash[12+i] == address[i]);
     }
 
-    // Return nullifier
-    let nullifier : [u8; 32] = std::hash::keccak256(signature, 64);
-    nullifier
+    // Check nullifier
+    let calculatedNullfier : [u8; 32] = std::hash::keccak256(signature, 64);
+    for i in 0..32 {
+        assert(nullifier[i] == calculatedNullfier[i]);
+    }
 }
 
 // #[test]

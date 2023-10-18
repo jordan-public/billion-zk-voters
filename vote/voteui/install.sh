@@ -1,4 +1,8 @@
 #!/bin/bash
 
+pushd ../votezkproof
+nargo check
+nargo compile
+popd
 cd src
-ln -s ../../votezkproof/target artifacts
+ln -sf ../../votezkproof/target circuits
