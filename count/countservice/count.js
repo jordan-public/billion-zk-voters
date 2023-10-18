@@ -7,7 +7,7 @@ import { ethers } from 'ethers';
 //import { BackendInstances, ProofArtifacts } from './types';
 
 // Connect to IPFS daemon API server
-const ipfs = await IPFS.create("http://localhost:5001");
+const ipfs = await IPFS.create("http://127.0.0.1:5001");
 // const ipfs = IPFS({
 //   host: 'localhost',   // IPFS daemon address
 //   port: '5001',       // API port

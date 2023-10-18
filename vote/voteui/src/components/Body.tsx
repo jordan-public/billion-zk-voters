@@ -31,7 +31,7 @@ function Body({ signer, address } : BodyProps) {
     React.useEffect(() => {
         (async () => {
             setIpfs(await IPFS.create({
-                host: 'localhost',   // IPFS daemon address
+                host: '127.0.0.1',   // IPFS daemon address
                 port: 5001,       // API port
                 protocol: 'http'    // HTTP or HTTPS
             }));
