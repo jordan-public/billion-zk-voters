@@ -13,3 +13,8 @@ nargo check
 nargo compile
 popd
 cp ../countvproof/target/* circuits/
+pushd ../../vote/votezkproof/
+nargo check
+nargo compile
+popd
+cp ../../vote/votezkproof/target/* circuits/

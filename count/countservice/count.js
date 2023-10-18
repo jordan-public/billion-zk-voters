@@ -2,29 +2,59 @@ import { Noir, generateWitness } from '@noir-lang/noir_js';
 import { BarretenbergBackend } from '@noir-lang/backend_barretenberg';
 import voteCircuit from './circuits/mockvotezkproof.json' assert { type: 'json' };
 import countCircuit from './circuits/countvproof.json' assert { type: 'json' };
-
+import * as IPFS from 'ipfs-http-client';
 //import { BackendInstances, ProofArtifacts } from './types';
+
+// Connect to IPFS daemon API server
+const ipfs = await IPFS.create("http://localhost:5001");
+// const ipfs = IPFS({
+//   host: 'localhost',   // IPFS daemon address
+//   port: '5001',       // API port
+//   protocol: 'http'    // HTTP or HTTPS
+// });
+
+const topic = 'To be or not to be?|Not to be.|To be.';  // Replace with your topic name
+
+// Subscribe to a topic
+ipfs.pubsub.subscribe(topic, async (msg) => {
+    // Convert message data to object
+    const decoder = new TextDecoder('utf-8');
+    message = JSON.parse(decoder.decode(msg.data));
+    console.log('Received message of length: ', message.length, ' and type: ', typeof message);
+    await prove();
+}, (err) => {
+    if (err) {
+        console.error('Failed to subscribe to topic:', err);
+        process.exit(1);
+    } else {
+        console.log(`Subscribed to topic: ${topic}`);
+    }
+});
+
 
 let input;
 let voteProof;
 let proofArtifacts;
 let countBackend;
 let countProof;
+let message;
 
 const calculateVoteProof = async () => {
     const voteBackend = new BarretenbergBackend(voteCircuit, 8);
     
-    // Main
-    const vote = new Noir(voteCircuit, voteBackend);
-    await vote.init();
+    // // Main
+    // const vote = new Noir(voteCircuit, voteBackend);
+    // await vote.init();
 
-    const numPublicInputs = 4;
-    console.log('generating vote proof');
-    input = { junk: 1, pubjunk: [1, 2, 3], pubjunk2: 1 };
-    console.log("input:", input);
-    const voteWitness = await generateWitness(voteCircuit, input);
-    voteProof = await voteBackend.generateIntermediateProof(voteWitness);
-    //console.log('vote proof generated: ', voteProof);
+    const numPublicInputs = 4192-63;
+    // console.log('generating vote proof');
+    // input = { junk: 1, pubjunk: [1, 2, 3], pubjunk2: 1 };
+    // console.log("input:", input);
+    // const voteWitness = await generateWitness(voteCircuit, input);
+    // voteProof = await voteBackend.generateIntermediateProof(voteWitness);
+    // //console.log('vote proof generated: ', voteProof);
+    const voteProof = Uint8Array.from(Object.values(message));
+    console.log('voteProof type and length', typeof voteProof, voteProof.length, voteProof);
 
     // Verify the same proof, not inside of a circuit
     console.log('verifying vote proof (out of circuit)');
@@ -92,7 +122,7 @@ const verifyCountProof = async () => {
     }
 };
 
-async function main() {
+async function prove() {
     await calculateVoteProof();
     console.log("calculateVoteProof done");
     await calculateCountProof();
@@ -101,6 +131,5 @@ async function main() {
     console.log("verifyCountProof done");
 }
 
-(async () => {
-    await main();
-})();
+// To keep the Node.js process running
+process.stdin.resume();

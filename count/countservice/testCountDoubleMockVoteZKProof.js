@@ -24,7 +24,7 @@ const calculateVoteProof = async () => {
     console.log("input:", input);
     const voteWitness = await generateWitness(voteCircuit, input);
     voteProof = await voteBackend.generateIntermediateProof(voteWitness);
-    //console.log('vote proof generated: ', voteProof);
+    console.log('voteProof', typeof voteProof, voteProof.length, voteProof);
 
     // Verify the same proof, not inside of a circuit
     console.log('verifying vote proof (out of circuit)');
