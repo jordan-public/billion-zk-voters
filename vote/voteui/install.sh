@@ -5,4 +5,4 @@ nargo check
 nargo compile
 popd
 cd src
-ln -sf ../../votezkproof/target/*.json circuits
+ln -sf ../../votezkproof/target circuits
