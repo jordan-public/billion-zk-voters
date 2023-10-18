@@ -56,6 +56,7 @@ function Body({ signer, address } : BodyProps) {
             return;
         }
         const toSign = issue + voteFor.toString();
+console.log("toSign", toSign);
         const signature = await signer.signMessage(toSign);
         console.log('Signature with length', signature.length, signature);
         console.log('r=', signature.slice(2, 66));
@@ -86,13 +87,22 @@ function Body({ signer, address } : BodyProps) {
         console.log("address", JSON.stringify(Array.from(ethers.getBytes(addressRecovered), byte => byte.toString())));
         console.log("nullifier", JSON.stringify(Array.from(ethers.getBytes(nullifier), byte => byte.toString())));
 
+        // Both variants work:
+        // setInput({
+        //     public_key_x: Array.from(ethers.getBytes('0x' + pubKey.slice(4, 68)), byte => byte.toString()),
+        //     public_key_y: Array.from(ethers.getBytes('0x' + pubKey.slice(68, 132)), byte => byte.toString()),
+        //     signature: Array.from(ethers.getBytes(signature.slice(0, 130)), byte => byte.toString()),
+        //     message_hash: Array.from(ethers.getBytes(messageHash), byte => byte.toString()),
+        //     address: Array.from(ethers.getBytes(addressRecovered), byte => byte.toString()),
+        //     nullifier: Array.from(ethers.getBytes(nullifier), byte => byte.toString()),
+        // });
         setInput({
-            public_key_x: Array.from(ethers.getBytes('0x' + pubKey.slice(4, 68)), byte => byte.toString()),
-            public_key_y: Array.from(ethers.getBytes('0x' + pubKey.slice(68, 132)), byte => byte.toString()),
-            signature: Array.from(ethers.getBytes(signature.slice(0, 130)), byte => byte.toString()),
-            message_hash: Array.from(ethers.getBytes(messageHash), byte => byte.toString()),
-            address: Array.from(ethers.getBytes(addressRecovered), byte => byte.toString()),
-            nullifier: Array.from(ethers.getBytes(nullifier), byte => byte.toString()),
+            public_key_x: Array.from(ethers.getBytes('0x' + pubKey.slice(4, 68))),
+            public_key_y: Array.from(ethers.getBytes('0x' + pubKey.slice(68, 132))),
+            signature: Array.from(ethers.getBytes(signature.slice(0, 130))),
+            message_hash: Array.from(ethers.getBytes(messageHash)),
+            address: Array.from(ethers.getBytes(addressRecovered)),
+            nullifier: Array.from(ethers.getBytes(nullifier)),
         });
     }
 
@@ -125,6 +135,7 @@ function Body({ signer, address } : BodyProps) {
                 if (!proof) return;
                 const before = Date.now();
                 const verification = await noirWithBackend.backend.verifyIntermediateProof(proof);
+                if (!verification) window.alert('Proof verification failed!');
 console.log("verification", verification);
                 console.log("Proof verified in", (Date.now() - before)/1000, "s");
                 resolve(verification);
@@ -143,7 +154,7 @@ console.log("verification", verification);
         if (Object.keys(proof).length === 0) return; // Empty proof
         (async () => {
             const topic = issue; // For clarity of code
-            ipfs.pubsub.publish(topic, JSON.stringify(proof), (err: any) => {
+            ipfs.pubsub.publish(topic, JSON.stringify({proof: proof, publicInputs: {message_hash: input.message_hash, nullifier: input.nullifier}}), (err: any) => {
                 if (err) {
                   console.error('Failed to publish message:', err);
                   toast({title: 'Failed to publish message'});

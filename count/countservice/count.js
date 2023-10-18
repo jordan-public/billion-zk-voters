@@ -1,6 +1,6 @@
 import { Noir, generateWitness } from '@noir-lang/noir_js';
 import { BarretenbergBackend } from '@noir-lang/backend_barretenberg';
-import voteCircuit from './circuits/mockvotezkproof.json' assert { type: 'json' };
+import voteCircuit from './circuits/votezkproof.json' assert { type: 'json' };
 import countCircuit from './circuits/countvproof.json' assert { type: 'json' };
 import * as IPFS from 'ipfs-http-client';
 //import { BackendInstances, ProofArtifacts } from './types';
@@ -46,19 +46,23 @@ const calculateVoteProof = async () => {
     // const vote = new Noir(voteCircuit, voteBackend);
     // await vote.init();
 
-    const numPublicInputs = 4192-63;
+    const numPublicInputs = 32+32;
     // console.log('generating vote proof');
     // input = { junk: 1, pubjunk: [1, 2, 3], pubjunk2: 1 };
     // console.log("input:", input);
     // const voteWitness = await generateWitness(voteCircuit, input);
     // voteProof = await voteBackend.generateIntermediateProof(voteWitness);
     // //console.log('vote proof generated: ', voteProof);
-    const voteProof = Uint8Array.from(Object.values(message));
-    console.log('voteProof type and length', typeof voteProof, voteProof.length, voteProof);
+    const voteProofWithInputs = { proof: Uint8Array.from(Object.values(message.proof)), publicInputs: message.publicInputs };
+    console.log('voteProofWithInputs type and length', typeof voteProofWithInputs, voteProofWithInputs.length, voteProofWithInputs);
+    console.log('proof type and length', typeof voteProofWithInputs.proof, voteProofWithInputs.proof.length, voteProofWithInputs.proof);
+    console.log('public_inputs type and length', typeof voteProofWithInputs.publicInputs, voteProofWithInputs.publicInputs.length, voteProofWithInputs.publicInputs);
+    console.log('message_hash type and length', typeof voteProofWithInputs.publicInputs.message_hash, voteProofWithInputs.publicInputs.message_hash.length, voteProofWithInputs.publicInputs.message_hash);
+    console.log('nullifier type and length', typeof voteProofWithInputs.publicInputs.nullifier, voteProofWithInputs.publicInputs.nullifier.length, voteProofWithInputs.publicInputs.nullifier);
 
     // Verify the same proof, not inside of a circuit
     console.log('verifying vote proof (out of circuit)');
-    const verified = await voteBackend.verifyIntermediateProof(voteProof);
+    const verified = await voteBackend.verifyIntermediateProof(voteProofWithInputs.proof);
     console.log('vote proof verified as', verified);
 
     // Now we will take that vote proof and verify it in an count proof.
