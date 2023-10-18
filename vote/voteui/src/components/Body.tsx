@@ -2,7 +2,7 @@
 import React from 'react';
 import { Flex, Button, Text, Box, InputGroup, InputLeftAddon, Input, RadioGroup, Radio, VStack, useToast } from '@chakra-ui/react'
 import { ethers } from 'ethers'
-import { Noir } from '@noir-lang/noir_js'
+import { Noir, generateWitness } from '@noir-lang/noir_js'
 import { BarretenbergBackend } from '@noir-lang/backend_barretenberg';
 import circuit from '../circuits/votezkproof.json'
 import * as IPFS from 'ipfs-http-client';
@@ -12,12 +12,17 @@ interface BodyProps {
     address: string | null;
 }
 
+function createNoirWithBackend() { // Workaround because the backend is privte in Noir
+    const barretenbergBackend = new BarretenbergBackend(circuit, 8);
+    return {backend: barretenbergBackend, noir: new Noir(circuit, barretenbergBackend)};
+}
+
 function Body({ signer, address } : BodyProps) {
     const [issue, setIssue] = React.useState<string>('To be or not to be?|Not to be.|To be.')
     const [voteFor, setVoteFor] = React.useState<number | null>(null)
     const [input, setInput] = React.useState<any>(null);
     const [proof, setProof] = React.useState(Uint8Array.from([]));
-    const [noir, setNoir] = React.useState(new Noir(circuit, new BarretenbergBackend(circuit, 8)));
+    const [noirWithBackend, setNoirWithBackend] = React.useState(createNoirWithBackend());
     const [issueTitle, setIssueTitle] = React.useState<string>('');
     const [candidates, setCandidates] = React.useState<string[]>([]);
     const [ipfs, setIpfs] = React.useState<any>(null);
@@ -97,8 +102,10 @@ function Body({ signer, address } : BodyProps) {
         (async () => {
             const calc = new Promise(async (resolve, reject) => {
                 const before = Date.now();
-                const proof = await noir.generateFinalProof(input);
-console.log("proof", proof);
+                // Insteaad of: const proof = await noir.generateFinalProof(input);
+                const witness = await generateWitness(circuit, input);
+                const proof = await noirWithBackend.backend.generateIntermediateProof(witness);
+    console.log("proof", proof);
                 console.log("Proof generated in", (Date.now() - before)/1000, "s");
                 setProof(proof);
                 resolve(proof);
@@ -117,7 +124,7 @@ console.log("proof", proof);
             const verify = new Promise(async (resolve, reject) => {
                 if (!proof) return;
                 const before = Date.now();
-                const verification = await noir.verifyFinalProof(proof);
+                const verification = await noirWithBackend.backend.verifyIntermediateProof(proof);
 console.log("verification", verification);
                 console.log("Proof verified in", (Date.now() - before)/1000, "s");
                 resolve(verification);
@@ -152,9 +159,10 @@ console.log("verification", verification);
     React.useEffect(() => {
         (async () => {
             const init = new Promise(async (resolve, reject) => {
-                await noir.init();
-                setNoir(noir);
-                resolve(noir);
+                await noirWithBackend.noir.init();
+                const nb = {backend: noirWithBackend.backend, noir: noirWithBackend.noir};
+                //setNoirWithBackend(nb);
+                resolve(nb);
             });
             toast.promise(init, {
                 loading: { title: 'Initializing Noir...'} ,
@@ -164,9 +172,9 @@ console.log("verification", verification);
         }) ();
 
         // return () => {
-        //     noir.destroy();
+        //     noirWithBackend.noir.destroy();
         // };
-    }, [noir]);
+    }, [noirWithBackend]);
 
     if (!signer) return(<><br/>Please connect!</>)
     return (<Flex height="100vh" width="100vw" alignItems="center" justifyContent="center">
