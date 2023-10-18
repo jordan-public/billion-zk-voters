@@ -2,9 +2,11 @@
 import React from 'react';
 import { Flex, Button, Text, Box, InputGroup, InputLeftAddon, Input, RadioGroup, Radio, VStack, useToast } from '@chakra-ui/react'
 import { ethers } from 'ethers'
-import { Noir, generateWitness } from '@noir-lang/noir_js'
+import { Noir } from '@noir-lang/noir_js'
 import { BarretenbergBackend } from '@noir-lang/backend_barretenberg';
 import circuit from '../circuits/votezkproof.json'
+import * as IPFS from 'ipfs-http-client';
+
 interface BodyProps {
     signer: ethers.Signer | null;
     address: string | null;
@@ -18,6 +20,17 @@ function Body({ signer, address } : BodyProps) {
     const [noir, setNoir] = React.useState(new Noir(circuit, new BarretenbergBackend(circuit, 8)));
     const [issueTitle, setIssueTitle] = React.useState<string>('');
     const [candidates, setCandidates] = React.useState<string[]>([]);
+    const [ipfs, setIpfs] = React.useState<any>(null);
+
+    React.useEffect(() => {
+        (async () => {
+            setIpfs(await IPFS.create({
+                host: 'localhost',   // IPFS daemon address
+                port: 5001,       // API port
+                protocol: 'http'    // HTTP or HTTPS
+            }));
+        }) ();
+    }, []);
 
     React.useEffect(() => {
         if (!issue) return;
@@ -115,6 +128,24 @@ console.log("verification", verification);
                 error: { title: 'Error verifying proof'},
             });
         }
+    }, [proof]);
+
+    // Uploads proof to IPFS
+    React.useEffect(() => {
+        if (!ipfs) return;
+        if (Object.keys(proof).length === 0) return; // Empty proof
+        (async () => {
+            const topic = issue; // For clarity of code
+            ipfs.pubsub.publish(topic, JSON.stringify(proof), (err: any) => {
+                if (err) {
+                  console.error('Failed to publish message:', err);
+                  toast({title: 'Failed to publish message'});
+                } else {
+                  console.log(`Published message to topic: ${topic}`);
+                  toast({title: 'Published vote proof to topic: ' + topic});
+                }
+              });              
+        }) ();
     }, [proof]);
   
     // Initializes Noir
