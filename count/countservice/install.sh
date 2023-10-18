@@ -17,4 +17,4 @@ pushd ../../vote/votezkproof/
 nargo check
 nargo compile
 popd
-cp ../../vote/votezkproof/target/* circuits/
+cp ../../vote/votezkproof/target/*.json circuits/
