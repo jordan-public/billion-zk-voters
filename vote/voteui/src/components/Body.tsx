@@ -21,6 +21,7 @@ function Body({ signer, address } : BodyProps) {
     const [issue, setIssue] = React.useState<string>('To be or not to be?|Not to be.|To be.')
     const [voteFor, setVoteFor] = React.useState<number | null>(null)
     const [input, setInput] = React.useState<any>(null);
+    const [lastInput, setLastInput] = React.useState<any>(null); // For debugging
     const [proof, setProof] = React.useState(Uint8Array.from([]));
     const [noirWithBackend, setNoirWithBackend] = React.useState(createNoirWithBackend());
     const [issueTitle, setIssueTitle] = React.useState<string>('');
@@ -56,7 +57,7 @@ function Body({ signer, address } : BodyProps) {
             return;
         }
         const toSign = issue + voteFor.toString();
-console.log("toSign", toSign);
+        console.log("toSign", toSign);
         const signature = await signer.signMessage(toSign);
         console.log('Signature with length', signature.length, signature);
         console.log('r=', signature.slice(2, 66));
@@ -87,6 +88,10 @@ console.log("toSign", toSign);
         console.log("address", JSON.stringify(Array.from(ethers.getBytes(addressRecovered), byte => byte.toString())));
         console.log("nullifier", JSON.stringify(Array.from(ethers.getBytes(nullifier), byte => byte.toString())));
 
+
+        // For debugging
+        setLastInput(input);
+
         // Both variants work:
         // setInput({
         //     public_key_x: Array.from(ethers.getBytes('0x' + pubKey.slice(4, 68)), byte => byte.toString()),
@@ -106,6 +111,11 @@ console.log("toSign", toSign);
         });
     }
 
+    // For debugging
+    React.useEffect(() => {
+        console.log("**************** same input?", JSON.stringify(input) === JSON.stringify(lastInput) ? "yes" : "no");
+    }, [input, lastInput]);
+
     // Calculates proof
     React.useEffect(() => {
         if (!input) return;
@@ -115,8 +125,10 @@ console.log("toSign", toSign);
                 // Insteaad of: const proof = await noir.generateFinalProof(input);
                 const witness = await generateWitness(circuit, input);
                 const proof = await noirWithBackend.backend.generateIntermediateProof(witness);
-    console.log("proof", proof);
                 console.log("Proof generated in", (Date.now() - before)/1000, "s");
+                console.log("proof", proof);
+                console.log("proof hash", ethers.keccak256(proof));
+                console.log("circuit hash", ethers.keccak256(ethers.toUtf8Bytes(JSON.stringify(circuit))));
                 setProof(proof);
                 resolve(proof);
             });
@@ -135,9 +147,15 @@ console.log("toSign", toSign);
                 if (!proof) return;
                 const before = Date.now();
                 const verification = await noirWithBackend.backend.verifyIntermediateProof(proof);
-                if (!verification) window.alert('Proof verification failed!');
-console.log("verification", verification);
                 console.log("Proof verified in", (Date.now() - before)/1000, "s");
+                if (!verification) window.alert('Proof verification failed!');
+                console.log("verification", verification);
+                // // For debugging, to show that second verification works as well, and it's much faster after the initial loading
+                // const beforesecond = Date.now();
+                // const secondverification = await noirWithBackend.backend.verifyIntermediateProof(proof);
+                // console.log("Proof verified again in", (Date.now() - beforesecond)/1000, "s");
+                // if (!secondverification) window.alert('Proof verification failed!');
+                // console.log("secondverification", secondverification);
                 resolve(verification);
             });
             toast.promise(verify, {
@@ -182,9 +200,11 @@ console.log("verification", verification);
             });
         }) ();
 
-        // return () => {
-        //     noirWithBackend.noir.destroy();
-        // };
+        return () => {
+            (async () => {
+                await noirWithBackend.backend.destroy();
+            }) ();
+        };
     }, [noirWithBackend]);
 
     if (!signer) return(<><br/>Please connect!</>)

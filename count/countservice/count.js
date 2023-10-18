@@ -3,6 +3,7 @@ import { BarretenbergBackend } from '@noir-lang/backend_barretenberg';
 import voteCircuit from './circuits/votezkproof.json' assert { type: 'json' };
 import countCircuit from './circuits/countvproof.json' assert { type: 'json' };
 import * as IPFS from 'ipfs-http-client';
+import { ethers } from 'ethers';
 //import { BackendInstances, ProofArtifacts } from './types';
 
 // Connect to IPFS daemon API server
@@ -42,9 +43,9 @@ let message;
 const calculateVoteProof = async () => {
     const voteBackend = new BarretenbergBackend(voteCircuit, 8);
     
-    // // Main
-    // const vote = new Noir(voteCircuit, voteBackend);
-    // await vote.init();
+    // Main
+    const vote = new Noir(voteCircuit, voteBackend);
+    await vote.init();
 
     const numPublicInputs = 32+32;
     // console.log('generating vote proof');
@@ -59,7 +60,9 @@ const calculateVoteProof = async () => {
     console.log('public_inputs type and length', typeof voteProofWithInputs.publicInputs, voteProofWithInputs.publicInputs.length, voteProofWithInputs.publicInputs);
     console.log('message_hash type and length', typeof voteProofWithInputs.publicInputs.message_hash, voteProofWithInputs.publicInputs.message_hash.length, voteProofWithInputs.publicInputs.message_hash);
     console.log('nullifier type and length', typeof voteProofWithInputs.publicInputs.nullifier, voteProofWithInputs.publicInputs.nullifier.length, voteProofWithInputs.publicInputs.nullifier);
-
+    console.log("proof hash", ethers.keccak256(voteProofWithInputs.proof));
+    console.log("circuit hash", ethers.keccak256(ethers.toUtf8Bytes(JSON.stringify(voteCircuit))));
+                                
     // Verify the same proof, not inside of a circuit
     console.log('verifying vote proof (out of circuit)');
     const verified = await voteBackend.verifyIntermediateProof(voteProofWithInputs.proof);
