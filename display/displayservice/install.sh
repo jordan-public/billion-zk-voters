@@ -1,6 +1,5 @@
 #!/bin/bash
-
-#!/bin/bash
+set -x
 
 mkdir -p circuits
 cp ../sumvproof/target/* circuits/

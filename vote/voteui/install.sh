@@ -1,5 +1,5 @@
 #!/bin/bash
-
+set -x
 pushd ../votezkproof
 nargo check
 nargo compile

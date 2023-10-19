@@ -5,6 +5,11 @@ The system consists of several components:
 - Count: Service for counting the votes.
 - Display: service, Smart Contracts and web application for displaying the results.
 
+The versions if Noir compiler and packages used are: 
+- noir v0.11.0 (to insall run ```noirup -v 0.11.0```)
+- noir-lang/backend_barretenberg 0.7.10
+- noir-lang/noir_js 0.16.0
+
 ## Vote
 
 ### Web application
