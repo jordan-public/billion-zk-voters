@@ -3,8 +3,8 @@
 pushd ../mockvotezkproof/
 nargo check
 nargo compile
-nargo prove
-nargo verify
+#nargo prove
+#nargo verify
 popd
 mkdir -p circuits
 cp ../mockvotezkproof/target/* circuits/
@@ -13,8 +13,8 @@ nargo check
 nargo compile
 popd
 cp ../countvproof/target/* circuits/
-pushd ../../vote/votezkproof/
-nargo check
-nargo compile
-popd
+# pushd ../../vote/votezkproof/
+# nargo check
+# nargo compile
+# popd
 cp ../../vote/votezkproof/target/*.json circuits/
