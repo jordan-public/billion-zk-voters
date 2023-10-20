@@ -27,11 +27,3 @@ fn main(public_key_x : [u8; 32], public_key_y : [u8; 32], signature: [u8; 64], m
         assert(nullifier[i] == calculatedNullfier[i]);
     }
 }
-
-// #[test]
-// fn test_main() {
-//     main(1, 2);
-
-//     // Uncomment to make test fail
-//     // main(1, 1);
-// }
