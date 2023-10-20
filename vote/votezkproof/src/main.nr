@@ -5,7 +5,7 @@ use dep::std;
 
 fn main(public_key_x : [u8; 32], public_key_y : [u8; 32], signature: [u8; 64], message_hash: pub [u8; 32], address: [u8; 20], nullifier : pub [u8; 32]) {
 // // WARNING, IMPORTANT!:
-// // Uncomment the following lines and comment the line above to verify the Merkle proof. This is commented for simplification of the demo.
+// // Uncomment the following lines and comment the line above to verify the Merkle proof of ballot existence. This is commented for simplification of the demo.
 // fn main(public_key_x : [u8; 32], public_key_y : [u8; 32], signature: [u8; 64], message_hash: pub [u8; 32], address: [u8; 20], nullifier : pub [u8; 32],
 //     ballot_root: Field, ballot_path: Field, ballot_siblings: [Field; 32]) {
 //     // Verify Merkle proof that address is in the ballot tree. The ballot is effectively a hash of the address.
