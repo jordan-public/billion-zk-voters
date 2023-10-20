@@ -18,6 +18,10 @@ fn main(public_key_x : [u8; 32], public_key_y : [u8; 32], signature: [u8; 64], m
     // The message is keccak256('\x19Ethereum Signed Message:\n' + toSign.length.toString() + toSign),
     // where toSign is issue + vote.toString.
     // Vote itself is a number from 0 to n-1 (n is the number of candidates).
+    // WARNING: there is a known issue that multiple signatures can be generated for the same message.
+    // A different signature scheme should be used instead of ecdsa_secp256k1, but we are igniring this issue
+    // for the time being, as the signatures are convenientlt produced by MetaMask. Users can conveniently vote using MetaMask.
+    // In some countries (Japan for example) personal ID cards can be used for signing messages. This is still an early stage, and it should ve investigated further.
     let ok = std::ecdsa_secp256k1::verify_signature(public_key_x, public_key_y, signature, message_hash);
     assert(ok);
 

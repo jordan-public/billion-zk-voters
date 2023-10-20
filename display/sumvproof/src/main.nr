@@ -27,6 +27,9 @@ fn main(
 ) -> pub [Field; 16] {
     let mut aggregation_object = input_aggregation_object;
 
+    // The next line of code is intentionally ignoring some inputs to the count prover.
+    // Because of this there could be multiple solutions of the constraint circuit.
+    // However, as this is a validity proof not looking fot unique solution, but only for a solution, this is fine.
     let (current_count, _, _, _, _, count_message_hash) = extract_count_params(count_public_inputs);
     assert(count_message_hash == message_hash); // Counting votes for the same candidate (message_hash) in the current count
     assert(count == current_count);
