@@ -1,6 +1,7 @@
 #!/bin/bash
+set +x
 
 # From the directory above this one, source the .env file
 source ../.env
 
-node pushcount.js
+PASSPHRASE=$PASSPHRASE RPC=$RPC node pushcount.js

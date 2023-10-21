@@ -16,6 +16,7 @@ const ipfs = await IPFS.create("http://127.0.0.1:5001");
 
 const topic = 'To be or not to be?|Not to be.|To be.';  // Replace with your topic name
 const displayTopic = 'display' + topic;
+let message;
 
 // Subscribe to a topic
 ipfs.pubsub.subscribe(displayTopic, async (msg) => {
@@ -37,23 +38,22 @@ const voteCountMap = new Map(); // Initially, no votes have been counted
 const numShards = 1;
 const shardId = 0;
 
+// Get passphrase from environment variable
+const passphrase = process.env.PASSPHRASE;
+if (passphrase === undefined) {
+    console.log('PASSPHRASE environment variable not set');
+    process.exit(1);
+}
+// Get provider from environment variable
+const rpc = process.env.RPC;
+if (rpc === undefined) {
+    console.log('RPC environment variable not set');
+    process.exit(1);
+}
+    
 const pushCountProof = async (message) => {               
     // Recursive proof verification would occur here
     console.log('recursive proof count');
-    countVote(message.publicInputs.message_hash);
-    
-    // Get passphrase from environment variable
-    const passphrase = process.env.PASSPHRASE;
-    if (passphrase === undefined) {
-        console.log('MNEMONIC environment variable not set');
-        process.exit(1);
-    }
-    // Get provider from environment variable
-    const rpc = process.env.RPC;
-    if (rpc === undefined) {
-        console.log('RPC environment variable not set');
-        process.exit(1);
-    }
     
     const contractAddress = aAggregateCounts.contractAddress;
     const contractABI = aAggregateCounts.abi;
@@ -62,7 +62,7 @@ const pushCountProof = async (message) => {
     const signer = wallet.connect(provider);  
     const contract = new ethers.Contract(contractAddress, contractABI, signer);
     try {
-        const updateResult = await contract.updateResult(ethers.keccak256(ethers.toUtf8Bytes(topic)), message.publicInputs.message_hash, message.publicInputs.voteCount, message.publicInputs.shardId, "0x", []);
+        const updateResult = await contract.updateResult(message.publicInputs.descriptionHash, message.publicInputs.message_hash, message.publicInputs.voteCount, message.publicInputs.shardId, "0x", []);
         const r = await updateResult.wait();
         console.log('Completed. Transaction hash: ', r.hash);
     } catch (error) {

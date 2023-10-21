@@ -92,7 +92,7 @@ const processVoteProof = async () => {
     // Send the vote count with proof to the display service
     const voteCount = getVoteCount(message.publicInputs.message_hash);
     console.log(message.publicInputs.message_hash, 'has vote count', voteCount);
-    ipfs.pubsub.publish(displayTopic, JSON.stringify({proof: 0, publicInputs: {descriptionHash: descriptionHash, message_hash: message.publicInputs.message_hash, voteCount: voteCount, numShards: numShards, shardId: shardId }}), (err) => {
+    ipfs.pubsub.publish(displayTopic, JSON.stringify({proof: 0, publicInputs: {descriptionHash: ethers.keccak256(ethers.toUtf8Bytes(topic)), message_hash: message.publicInputs.message_hash, voteCount: voteCount, numShards: numShards, shardId: shardId }}), (err) => {
         if (err) {
           console.error('Failed to publish message:', err);
           toast({title: 'Failed to publish message'});
