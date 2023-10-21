@@ -40,7 +40,8 @@ console.log("cAggregateCounts: ", cAggregateCounts);
             try {
                 let v = [];
                 for (let i = 0; i < options.length; i++) {
-                    candidateHash = ethers.keccak256(ethers.toUtf8Bytes(topic + i.toString()));
+                    const toSign = issue + i.toString();
+                    const candidateHash = ethers.keccak256(ethers.toUtf8Bytes('\x19Ethereum Signed Message:\n' + toSign.length.toString() + toSign));
                     v.push(await cAggregateCounts.getVoteCount(issueHash, candidateHash));
                 };
                 setVotes(v);

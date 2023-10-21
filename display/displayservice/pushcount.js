@@ -61,10 +61,13 @@ const pushCountProof = async (message) => {
     const provider = new ethers.providers.JsonRpcProvider(rpc); // e.g., Infura, Alchemy, or a local node
     const signer = wallet.connect(provider);  
     const contract = new ethers.Contract(contractAddress, contractABI, signer);
-    const updateResult = await contract.updateResult(ethers.keccak256(ethers.toUtf8Bytes(topic)), message.publicInputs.message_hash, message.publicInputs.voteCount, message.publicInputs.shardId, "0x", []);
-    await updateResult.wait();
-
-    console.log('updateResult: ', updateResult);
+    try {
+        const updateResult = await contract.updateResult(ethers.keccak256(ethers.toUtf8Bytes(topic)), message.publicInputs.message_hash, message.publicInputs.voteCount, message.publicInputs.shardId, "0x", []);
+        const r = await updateResult.wait();
+        console.log('Completed. Transaction hash: ', r.hash);
+    } catch (error) {
+        console.log("Tansaction error: ", error);
+    }
 };
 
 // To keep the Node.js process running
