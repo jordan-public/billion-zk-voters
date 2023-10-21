@@ -6,7 +6,7 @@
 source .env
 
 # To deploy and verify our contract
-forge script script/Deploy.s.sol:Deploy --rpc-url "http://127.0.0.1:8545/" --sender $SENDER --private-key $PRIVATE_KEY --broadcast -vvvv
+forge script script/RegisterIssue.s.sol:Deploy --rpc-url "http://127.0.0.1:8545/" --sender $SENDER --private-key $PRIVATE_KEY --broadcast -vvvv
 
 source push_artifacts.sh "Deploy.s.sol/31337"
 

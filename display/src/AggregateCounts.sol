@@ -10,49 +10,54 @@ contract AggregateCounts {
     }
 
     struct issue {
+        address owner;
         uint256 numShards;
-        uint256 descriptionHash;
         uint256 deadline;
         IVerifier verifier;
-        candidate[] candidates;
+        mapping (uint256 => candidate) candidates;
     }
 
-    mapping (uint256=>issue) public issues; // issueId => issue
+    mapping (uint256 => issue) public issues; // descriptionHash => issue
 
-    // Anyone can create and issue an issueId, but the issueId must be unique
-    function createIssue(uint256 issueId, uint256 numCandidates, uint256 numShards, uint256 descriptionHash, uint256 deadline, IVerifier verifier) public {
-        require(issues[issueId].numShards == 0, "issueId already exists");
+    // Anyone can create an issue denoted by a descriptionHash, but it has to be unique
+    function createIssue(uint256 descriptionHash, uint256 numCandidates, uint256 numShards, uint256 deadline, IVerifier verifier) public {
+        require(issues[descriptionHash].numShards == 0, "issue already exists");
         require(numCandidates > 0, "numCandidates must be positive");
         require(numShards > 0, "numShards must be positive");
         require(deadline > block.timestamp, "deadline must be in the future");
-        issues[issueId].numShards = numShards;
-        issues[issueId].descriptionHash = descriptionHash;
-        issues[issueId].deadline = deadline;
-        issues[issueId].verifier = verifier;
-        for (uint256 i = 0; i < numCandidates; i++) {
-            issues[issueId].candidates.push(candidate(0, new uint256[](numShards)));
-        }
+        issues[descriptionHash].owner = msg.sender;
+        issues[descriptionHash].numShards = numShards;
+        issues[descriptionHash].deadline = deadline;
+        issues[descriptionHash].verifier = verifier;
     }
 
-    function updateResult(uint256 issueId, uint256 candidateId, uint256 result, uint256 shardId, bytes calldata _proof, bytes32[] calldata _publicInputs) public {
-        require(shardId < issues[issueId].numShards, "shardId out of range");
-        require(candidateId < issues[issueId].candidates.length, "candidateId out of range");
-        require(block.timestamp <= issues[issueId].deadline, "voting is over");
-        if (issues[issueId].candidates[candidateId].shardVoteCounts[shardId] >= result)
+    // The creator of the issue can add candidates
+    function addCandidate(uint256 descriptionHash, uint256 candidateHash) public {
+        require(issues[descriptionHash].numShards > 0, "issueId does not exist");
+        require(issues[descriptionHash].owner == msg.sender, "only the owner can add candidates");
+        require(issues[descriptionHash].candidates[candidateHash].shardVoteCounts.length == 0, "candidate already exists");
+        issues[descriptionHash].candidates[candidateHash].shardVoteCounts = new uint256[](issues[descriptionHash].numShards);
+    }
+
+    function updateResult(uint256 descriptionHash, uint256 candidateHash, uint256 result, uint256 shardId, bytes calldata _proof, bytes32[] calldata _publicInputs) public {
+        require(shardId < issues[descriptionHash].numShards, "shardId out of range");
+        require(issues[descriptionHash].candidates[candidateHash].shardVoteCounts.length != 0, "candidateHash has not been added");
+        require(block.timestamp <= issues[descriptionHash].deadline, "voting is over");
+        if (issues[descriptionHash].candidates[candidateHash].shardVoteCounts[shardId] >= result)
             return; // Succeed quietly if the result is not an improvement
-        require(issues[issueId].verifier.verify(_proof, _publicInputs), "invalid proof");
-        issues[issueId].candidates[candidateId].numVoteCount += result - issues[issueId].candidates[candidateId].shardVoteCounts[shardId]; // Update the total vote count
-        issues[issueId].candidates[candidateId].shardVoteCounts[shardId] = result;
+        require(issues[descriptionHash].verifier.verify(_proof, _publicInputs), "invalid proof");
+        issues[descriptionHash].candidates[candidateHash].numVoteCount += result - issues[descriptionHash].candidates[candidateHash].shardVoteCounts[shardId]; // Update the total vote count
+        issues[descriptionHash].candidates[candidateHash].shardVoteCounts[shardId] = result;
     }
 
-    function getVoteCount(uint256 issueId, uint256 candidateId) public view returns (uint256) {
-        require(issues[issueId].numShards > 0, "issueId does not exist");
-        require(candidateId < issues[issueId].candidates.length, "candidateId out of range");
-        return issues[issueId].candidates[candidateId].numVoteCount;
+    function getVoteCount(uint256 descriptionHash, uint256 candidateHash) public view returns (uint256) {
+        require(issues[descriptionHash].numShards > 0, "issueId does not exist");
+        require(issues[descriptionHash].candidates[candidateHash].shardVoteCounts.length != 0, "candidateHash has not been added");
+        return issues[descriptionHash].candidates[candidateHash].numVoteCount;
     }
 
-    function getDeadline(uint256 issueId) public view returns (uint256) {
-        require(issues[issueId].numShards > 0, "issueId does not exist");
-        return issues[issueId].deadline;
+    function getDeadline(uint256 descriptionHash) public view returns (uint256) {
+        require(issues[descriptionHash].numShards > 0, "issueId does not exist");
+        return issues[descriptionHash].deadline;
     }
 }

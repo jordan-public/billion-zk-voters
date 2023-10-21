@@ -16,13 +16,11 @@ import {
   } from '@chakra-ui/react';
 import { ethers } from 'ethers';
 import aAggregateCounts from '../artifacts/AggregateCounts.json';
-import aMockVerifier from '../artifacts/MockVerifier.json';
 
 const Body = ({provider}) => {
     const [blockNumber, setBlockNumber] = React.useState(0);
     const [cAggregateCounts, setCAggregateCounts] = React.useState(null);
-    const [cMockVerifier, setCMockVerifier] = React.useState(null);
-    const [issue, setIssue] = React.useState('');
+    const [issue, setIssue] = React.useState('To be or not to be?|Not to be.|To be.');
     const [issueHash, setIssueHash] = React.useState(null);
     const [title, setTitle] = React.useState('');
     const [options, setOptions] = React.useState([]);
@@ -31,7 +29,6 @@ const Body = ({provider}) => {
     React.useEffect(() => {
         if (!provider) return;
         setCAggregateCounts(new ethers.Contract(aAggregateCounts.contractAddress, aAggregateCounts.abi, provider));
-        setCMockVerifier(new ethers.Contract(aMockVerifier.contractAddress, aMockVerifier.abi, provider));
     }, [provider]);
 
     React.useEffect(() => {
@@ -43,7 +40,8 @@ console.log("cAggregateCounts: ", cAggregateCounts);
             try {
                 let v = [];
                 for (let i = 0; i < options.length; i++) {
-                    v.push(await cAggregateCounts.getVoteCount(issueHash, i));
+                    candidateHash = ethers.keccak256(ethers.toUtf8Bytes(topic + i.toString()));
+                    v.push(await cAggregateCounts.getVoteCount(issueHash, candidateHash));
                 };
                 setVotes(v);
             } catch (error) {
@@ -62,6 +60,7 @@ console.log("cAggregateCounts: ", cAggregateCounts);
     React.useEffect(() => {
         if (!issue) return;
         const h = ethers.keccak256(ethers.toUtf8Bytes(issue));
+        setIssueHash(h);
         console.log("issueHash: ", h);
         const parts = issue.split('|');
         setTitle(parts[0]);

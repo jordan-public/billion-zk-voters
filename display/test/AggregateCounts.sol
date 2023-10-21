@@ -16,7 +16,9 @@ contract AggregateCountsTest is Test {
     }
 
     function test_Count() public {
-        aggregateCounts.createIssue(0, 2, 1, 0, block.timestamp + 100, verifier);
+        aggregateCounts.createIssue(0, 2, 1, block.timestamp + 100, verifier);
+        aggregateCounts.addCandidate(0, 0);
+        aggregateCounts.addCandidate(0, 1);
         aggregateCounts.updateResult(0, 0, 1, 0, new bytes(1), new bytes32[](1));
         aggregateCounts.updateResult(0, 0, 2, 0, new bytes(1), new bytes32[](1));
         assert(aggregateCounts.getVoteCount(0, 0) == 2);

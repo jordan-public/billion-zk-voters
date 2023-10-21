@@ -15,7 +15,6 @@ const ipfs = await IPFS.create("http://127.0.0.1:5001");
 // });
 
 const topic = 'To be or not to be?|Not to be.|To be.';  // Replace with your topic name
-const displayTopic = 'display' + topic;
 
 // Subscribe to a topic
 ipfs.pubsub.subscribe(topic, async (msg) => {
@@ -40,29 +39,8 @@ let proofArtifacts;
 let countBackend;
 let countProof;
 let message;
-const voteCountMap = new Map(); // Initially, no votes have been counted
-const numShards = 1;
-const shardId = 0;
 
-const countVote(message_hash) {
-    // Count the vote
-    if (voteCountMap.has(message_hash)) {
-        voteCountMap.set(message_hash, voteCountMap.get(message_hash) + 1);
-    } else {
-        voteCountMap.set(message_hash, 1);
-    }
-}
-
-const getVoteCount(message_hash) {
-    // Get the vote count
-    if (voteCountMap.has(message_hash)) {
-        return voteCountMap.get(message_hash);
-    } else {
-        return 0;
-    }
-}
-
-const processVoteProof = async () => {
+const calculateVoteProof = async () => {
     const voteBackend = new BarretenbergBackend(voteCircuit, 8);
     
     // Main
@@ -84,28 +62,80 @@ const processVoteProof = async () => {
     console.log('nullifier type and length', typeof voteProofWithInputs.publicInputs.nullifier, voteProofWithInputs.publicInputs.nullifier.length, voteProofWithInputs.publicInputs.nullifier);
     console.log("proof hash", ethers.keccak256(voteProofWithInputs.proof));
     console.log("circuit hash", ethers.keccak256(ethers.toUtf8Bytes(JSON.stringify(voteCircuit))));
-               
-    // Recursive proof verification would occur here
-    console.log('recursive proof count');
-    countVote(message.publicInputs.message_hash);
+                                
+    // Verify the same proof, not inside of a circuit
+    console.log('verifying vote proof (out of circuit)');
+    const verified = await voteBackend.verifyIntermediateProof(voteProofWithInputs.proof);
+    console.log('vote proof verified as', verified);
+
+    // Now we will take that vote proof and verify it in an count proof.
+    console.log('Preparing input for count proof');
+    const { proofAsFields, vkAsFields, vkHash } = await voteBackend.generateIntermediateProofArtifacts(
+        voteProof,
+        numPublicInputs,
+    );
+    proofArtifacts = { proofAsFields, vkAsFields, vkHash };
     
-    // Send the vote count with proof to the display service
-    const voteCount = getVoteCount(message.publicInputs.message_hash);
-    console.log(message.publicInputs.message_hash, 'has vote count', voteCount);
-    const voteCountProof = { proof: 0, ; // Proof stubbed out
-    ipfs.pubsub.publish(displayTopic, JSON.stringify({proof: 0, publicInputs: {descriptionHash: descriptionHash, message_hash: message.publicInputs.message_hash, voteCount: voteCount, numShards: numShards, shardId: shardId }}), (err: any) => {
-        if (err) {
-          console.error('Failed to publish message:', err);
-          toast({title: 'Failed to publish message'});
-        } else {
-          console.log(`Published message to topic: ${displayTopic}`);
-          toast({title: 'Published vote proof to topic: ' + displayTopic});
-        }
-    });              
+    await voteBackend.destroy();
+};
+
+const calculateCountProof = async () => {
+    // Recursion
+    countBackend = new BarretenbergBackend(countCircuit, 8);
+
+    //const count = new Noir(countCircuit, countBackend!);
+    const count = new Noir(countCircuit, countBackend);
+    await count.init()
+
+    //console.log("proofArtifacts: ", proofArtifacts);
+
+    //const { proofAsFields, vkAsFields, vkHash } = proofArtifacts!
+    const { proofAsFields, vkAsFields, vkHash } = proofArtifacts;
+    // console.log('Proof as Fields: ', proofAsFields);
+    // console.log('Vk as Fields: ', vkAsFields);
+    // console.log('Vk Hash: ', vkHash);
+    const aggregationObject = Array(16).fill(
+        '0x0000000000000000000000000000000000000000000000000000000000000000',
+    );
+    const countInput = {
+        verification_key: vkAsFields.map(e => e.toString()),
+        proof: proofAsFields,
+        //public_inputs: [input!["junk"]],
+        public_inputs: [input["pubjunk"][0], input["pubjunk"][1], input["pubjunk"][2], input["pubjunk2"]],
+        key_hash: vkHash,
+        input_aggregation_object: aggregationObject,
+        proof_b: proofAsFields,
+    }
+
+    //console.log("count input", countInput)
+    console.log('generating witnesses for count proof');
+    console.log("countInput.proof.length:", countInput.proof.length)
+    const countWitness = await generateWitness(countCircuit, countInput);
+
+    console.log('generating count proof');
+    //const countProof = await countBackend!.generateFinalProof(countWitness);
+    const countProof = await countBackend.generateFinalProof(countWitness);
+    console.log('Count proof generated: ', countProof);
+}
+
+const verifyCountProof = async () => {
+    if (countProof) {
+        console.log("verifying count proof")
+        //const verification = await countBackend!.verifyFinalProof(countProof);
+        const verification = await countBackend.verifyFinalProof(countProof);
+        console.log('Proof verified as', verification);
+        //countBackend!.destroy();
+        await countBackend.destroy();
+    }
 };
 
 async function prove() {
-    await processVoteProof();
+    await calculateVoteProof();
+    console.log("calculateVoteProof done");
+    await calculateCountProof();
+    console.log("calculateCountProof done");
+    await verifyCountProof();
+    console.log("verifyCountProof done");
 }
 
 // To keep the Node.js process running
