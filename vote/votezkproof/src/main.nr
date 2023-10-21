@@ -18,13 +18,16 @@ fn main(public_key_x : [u8; 32], public_key_y : [u8; 32], signature: [u8; 64], m
     // The message is keccak256('\x19Ethereum Signed Message:\n' + toSign.length.toString() + toSign),
     // where toSign is issue + vote.toString.
     // Vote itself is a number from 0 to n-1 (n is the number of candidates).
-    // WARNING: there is a known issue that multiple signatures can be generated for the same message.
-    // A different signature scheme should be used instead of ecdsa_secp256k1, but we are igniring this issue
-    // for the time being, as the signatures are convenientlt produced by MetaMask. Users can conveniently vote using MetaMask.
     // In some countries (Japan for example) personal ID cards can be used for signing messages. This is still an early stage, and it should ve investigated further.
     let ok = std::ecdsa_secp256k1::verify_signature(public_key_x, public_key_y, signature, message_hash);
     assert(ok);
-
+    // There is a known issue that multiple signatures can be generated for the same message.
+    // MetaMask generates RFC 6979 signatures, which are deterministic and cannot be used for this attack.
+    // WARNING: We are assuming that the signer is RFC 6979 compliant. This cannot be checked without re-creating the signature,
+    // for which we would need the private key. This is a known issue and should be avoided by using a different signature scheme.
+    // In addition, checking whether the signature is out of the two possibilities is easy: just check for low-s value.
+    // To do this we would have to make sure s is < n/2, where n is the order of the curve, where s is the second half of the signature.
+    
     // Concatenate public_key_x and public_key_y into pubKey : [u8; 64]
     let mut pubKey : [u8; 64] = [0; 64];
     for i in 0..32 {
