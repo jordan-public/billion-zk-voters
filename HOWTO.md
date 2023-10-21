@@ -104,9 +104,9 @@ node createIssue.js "To be or not to be|Not to be|To be" 1 1704085200
 ```
 where 1704085200 represents Unix time for January 1, 2024 at midnight UTC.
 
-finally, as people vote in the web application ```http://localhost:3000``` the voting results are displayed in the web application ```http://localhost:3001``` (once this application is installed at the end of this writeup). However, occasionally, the results of the ongoing counting have to be published on the blockchain. To do this, for each shard, in a loop, typically each 10 minutes, the following would publish to the blockchain, for shard 1:
+finally, as people vote in the web application ```http://localhost:3000``` the voting results are displayed in the web application ```http://localhost:3001``` (once this application is installed at the end of this writeup). However, occasionally, the results of the ongoing counting have to be published on the blockchain. To do this, for each shard, in a loop, typically each 10 minutes, the following would publish to the blockchain, (temporarily hardcoded for for shardId = 0):
 ```
-node pushCount.js 1
+./pushcount.sh
 ```
 
 ### Result Display

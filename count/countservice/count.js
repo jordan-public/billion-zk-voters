@@ -44,7 +44,7 @@ const voteCountMap = new Map(); // Initially, no votes have been counted
 const numShards = 1;
 const shardId = 0;
 
-const countVote(message_hash) {
+const countVote = (message_hash) => {
     // Count the vote
     if (voteCountMap.has(message_hash)) {
         voteCountMap.set(message_hash, voteCountMap.get(message_hash) + 1);
@@ -53,7 +53,7 @@ const countVote(message_hash) {
     }
 }
 
-const getVoteCount(message_hash) {
+const getVoteCount = (message_hash) => {
     // Get the vote count
     if (voteCountMap.has(message_hash)) {
         return voteCountMap.get(message_hash);
@@ -92,8 +92,7 @@ const processVoteProof = async () => {
     // Send the vote count with proof to the display service
     const voteCount = getVoteCount(message.publicInputs.message_hash);
     console.log(message.publicInputs.message_hash, 'has vote count', voteCount);
-    const voteCountProof = { proof: 0, ; // Proof stubbed out
-    ipfs.pubsub.publish(displayTopic, JSON.stringify({proof: 0, publicInputs: {descriptionHash: descriptionHash, message_hash: message.publicInputs.message_hash, voteCount: voteCount, numShards: numShards, shardId: shardId }}), (err: any) => {
+    ipfs.pubsub.publish(displayTopic, JSON.stringify({proof: 0, publicInputs: {descriptionHash: descriptionHash, message_hash: message.publicInputs.message_hash, voteCount: voteCount, numShards: numShards, shardId: shardId }}), (err) => {
         if (err) {
           console.error('Failed to publish message:', err);
           toast({title: 'Failed to publish message'});

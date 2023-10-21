@@ -1,6 +1,6 @@
 import * as IPFS from 'ipfs-http-client';
 import { ethers } from 'ethers';
-import aAggregateCounts from './artifacts/AggregateCounts.json';
+import aAggregateCounts from './artifacts/AggregateCounts.json' assert { type: 'json' };;
 
 // Proof verification works only for non-recursive proofs at this time.
 // This issue has been reported.
