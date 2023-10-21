@@ -17,23 +17,6 @@ const ipfs = await IPFS.create("http://127.0.0.1:5001");
 const topic = 'To be or not to be?|Not to be.|To be.';  // Replace with your topic name
 const displayTopic = 'display' + topic;
 let message;
-
-// Subscribe to a topic
-ipfs.pubsub.subscribe(displayTopic, async (msg) => {
-    // Convert message data to object
-    const decoder = new TextDecoder('utf-8');
-    message = JSON.parse(decoder.decode(msg.data));
-    console.log('Received message of length: ', message.length, ' and type: ', typeof message);
-    await pushCountProof(message);
-}, (err) => {
-    if (err) {
-        console.error('Failed to subscribe to topic:', err);
-        process.exit(1);
-    } else {
-        console.log(`Subscribed to topic: ${topic}`);
-    }
-});
-
 const voteCountMap = new Map(); // Initially, no votes have been counted
 const numShards = 1;
 const shardId = 0;
@@ -51,18 +34,44 @@ if (rpc === undefined) {
     process.exit(1);
 }
     
+const contractAddress = aAggregateCounts.contractAddress;
+const contractABI = aAggregateCounts.abi;
+const wallet = ethers.Wallet.fromPhrase(passphrase);
+const provider = new ethers.JsonRpcProvider(rpc); // e.g., Infura, Alchemy, or a local node
+const signer = wallet.connect(provider);  
+const contract = new ethers.Contract(contractAddress, contractABI, signer);
+console.log('Contract address: ', contractAddress);
+
+// Subscribe to a topic
+ipfs.pubsub.subscribe(displayTopic, async (msg) => {
+    // Convert message data to object
+    const decoder = new TextDecoder('utf-8');
+    message = JSON.parse(decoder.decode(msg.data));
+    console.log('Received message of length: ', message.length, ' and type: ', typeof message);
+    await pushCountProof(message);
+}, (err) => {
+    if (err) {
+        console.error('Failed to subscribe to topic:', err);
+        process.exit(1);
+    } else {
+        console.log(`Subscribed to topic: ${topic}`);
+    }
+});
+
 const pushCountProof = async (message) => {               
     // Recursive proof verification would occur here
-    console.log('recursive proof count');
-    
-    const contractAddress = aAggregateCounts.contractAddress;
-    const contractABI = aAggregateCounts.abi;
-    const wallet = ethers.Wallet.fromMnemonic(passphrase);
-    const provider = new ethers.providers.JsonRpcProvider(rpc); // e.g., Infura, Alchemy, or a local node
-    const signer = wallet.connect(provider);  
-    const contract = new ethers.Contract(contractAddress, contractABI, signer);
+    console.log('recursive sum proof');
+
+    const parsedMessageHash = '0x' + message.publicInputs.message_hash.map(number => number.toString(16).padStart(2, '0')).join('');
+
+console.log('message.publicInputs.descriptionHash: ', message.publicInputs.descriptionHash, "decimal:", BigInt(message.publicInputs.descriptionHash));
+console.log('parsedMessageHash: ', parsedMessageHash, "decimal:", BigInt(parsedMessageHash));
+console.log('message.publicInputs.voteCount: ', message.publicInputs.voteCount);
+console.log('message.publicInputs.shardId: ', message.publicInputs.shardId);
+
     try {
-        const updateResult = await contract.updateResult(message.publicInputs.descriptionHash, message.publicInputs.message_hash, message.publicInputs.voteCount, message.publicInputs.shardId, "0x", []);
+        const updateResult = await contract.updateResult(BigInt(message.publicInputs.descriptionHash), BigInt(parsedMessageHash), message.publicInputs.voteCount, message.publicInputs.shardId, "0x", [],
+            { gasLimit: 1000000 });
         const r = await updateResult.wait();
         console.log('Completed. Transaction hash: ', r.hash);
     } catch (error) {

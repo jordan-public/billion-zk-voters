@@ -69,9 +69,10 @@ function Body({ signer, address } : BodyProps) {
         const signatureBytes = ethers.getBytes(signature.slice(0, 130));
         const nullifier = ethers.keccak256(signatureBytes);
         
+        console.log("message to be hashed", '\x19Ethereum Signed Message:\n' + toSign.length.toString() + toSign);
         const messageBytes = ethers.toUtf8Bytes('\x19Ethereum Signed Message:\n' + toSign.length.toString() + toSign);
         const messageHash = ethers.keccak256(messageBytes);
-        console.log("messageHash", messageHash.length, messageHash);
+        console.log("messageHash", messageHash.length, messageHash, " decimal: ", BigInt(messageHash));
 
         // Recover public key
         const pubKey = ethers.SigningKey.recoverPublicKey(messageHash, signature);
