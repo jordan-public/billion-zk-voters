@@ -85,6 +85,8 @@ cd display
 cd display
 ./deployAnvil.sh
 ```
+Note that the above script initiates a new Issue for voting as follows:
+"To be or not to be?|Not to be.|To be.". To register other voting Issues/Referendums see the script ```display/script/RegisterIssue.s.sol``` and follow the same simple pattern.
 
 ### Display Service etc.
 
@@ -120,7 +122,7 @@ pnpm install
 
 To run it locally in the ```display/displayui``` directory:
 ```
-PORT=3001 pnpm start
+./start.sh
 ```
 and use a browser with to open ```http://localhost:3001```
 

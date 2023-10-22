@@ -1,19 +1,6 @@
+/* global BigInt */
 import React from 'react';
-import {
-    ChakraProvider,
-    Box,
-    Text,
-    Link,
-    VStack,
-    Code,
-    Grid,
-    InputGroup,
-    Input,
-    InputLeftAddon,
-    List,
-    ListItem,
-    theme,
-  } from '@chakra-ui/react';
+import { Box, Text, VStack, InputGroup, Input, InputLeftAddon, List, ListItem } from '@chakra-ui/react';
 import { ethers } from 'ethers';
 import aAggregateCounts from '../artifacts/AggregateCounts.json';
 
@@ -27,43 +14,41 @@ const Body = ({provider}) => {
     const [votes, setVotes] = React.useState([]);
 
     React.useEffect(() => {
-        if (!provider) return;
-        setCAggregateCounts(new ethers.Contract(aAggregateCounts.contractAddress, aAggregateCounts.abi, provider));
-    }, [provider]);
-
-    React.useEffect(() => {
+console.log("reading votes ...");
         (async () => {
-console.log("cAggregateCounts: ", cAggregateCounts);
-            if (!cAggregateCounts) return;
-            if (options.length === 0) return;
-            if (!issueHash) return;
+            if (!cAggregateCounts) { console.log("no contract instantiated"); return; }
+            if (options.length === 0) { console.log("no options"); return; }
+            if (!issueHash) { console.log("no issueHash"); return; }
             try {
                 let v = [];
                 for (let i = 0; i < options.length; i++) {
                     const toSign = issue + i.toString();
                     const candidateHash = ethers.keccak256(ethers.toUtf8Bytes('\x19Ethereum Signed Message:\n' + toSign.length.toString() + toSign));
-                    v.push(await cAggregateCounts.getVoteCount(issueHash, candidateHash));
+                    v.push(await cAggregateCounts.getVoteCount(BigInt(issueHash), BigInt(candidateHash)));
                 };
                 setVotes(v);
             } catch (error) {
                 console.log("error: ", error);
             }
             })();
-    }, [blockNumber]);
+    }, [blockNumber, cAggregateCounts]);
 
     React.useEffect(() => {
-        if (provider) {
-            provider.on("block", setBlockNumber);
-            return () => provider.off("block", setBlockNumber);
-        }
-    }, [provider]);
+console.log("init provider: ", provider);
+        if (!provider) { console.error("provider is null"); return; }
+        setCAggregateCounts(new ethers.Contract(aAggregateCounts.contractAddress, aAggregateCounts.abi, provider));
+        provider.on("block", setBlockNumber);
+        return () => provider.off("block", setBlockNumber);
+    }, []);
 
     React.useEffect(() => {
+console.log("init issue: (setting options)", issue);
         if (!issue) return;
         const h = ethers.keccak256(ethers.toUtf8Bytes(issue));
         setIssueHash(h);
         console.log("issueHash: ", h);
         const parts = issue.split('|');
+console.log("number of options: ", parts.length - 1);
         setTitle(parts[0]);
         setOptions(parts.slice(1));
     }, [issue]);
@@ -78,7 +63,7 @@ console.log("cAggregateCounts: ", cAggregateCounts);
         <Box justifySelf>
             <Text fontSize="6xl" color="tomato">Issue: {title}</Text>
             <List>
-                {options.map((o, i) => <ListItem key={i}><Text fontSize="6xl" color="tomato">{o}: {votes && votes[i] && votes[i]}</Text></ListItem>)}
+                {options.map((o, i) => <ListItem key={i}><Text fontSize="6xl" color="tomato">{o}: {votes && votes.length>i && votes[i].toString()}</Text></ListItem>)}
             </List>
             <Text fontSize="6xl" color="tomato">Block number: {blockNumber}</Text>
         </Box>
