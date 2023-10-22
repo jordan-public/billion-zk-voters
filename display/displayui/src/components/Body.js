@@ -1,10 +1,6 @@
 /* global BigInt */
 import React from 'react';
-<<<<<<< Updated upstream
-import { Box, Text, VStack, InputGroup, Input, InputLeftAddon, List, ListItem } from '@chakra-ui/react';
-=======
 import { VStack, Box, Text, Flex, InputGroup, Input, InputLeftAddon, List, ListItem } from '@chakra-ui/react';
->>>>>>> Stashed changes
 import { ethers } from 'ethers';
 import aAggregateCounts from '../artifacts/AggregateCounts.json';
 
@@ -69,11 +65,7 @@ console.log("number of options: ", parts.length - 1);
         <Box border={1} borderRadius={5} p={5} m={5}>
             <Text fontSize="2xl" color="tomato">Issue: {title}</Text>
             <List>
-<<<<<<< Updated upstream
-                {options.map((o, i) => <ListItem key={i}><Text fontSize="6xl" color="tomato">{o}: {votes && votes.length>i && votes[i].toString()}</Text></ListItem>)}
-=======
                 {options.map((o, i) => <ListItem key={i}><Text fontSize="2xl" color="tomato">{o}: {votes && votes.length>i && votes[i].toString()}</Text></ListItem>)}
->>>>>>> Stashed changes
             </List>
         </Box>
         </VStack>
