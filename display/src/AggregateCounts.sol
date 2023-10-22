@@ -3,6 +3,10 @@ pragma solidity ^0.8.13;
 
 import "./interfaces/IVerifier.sol";
 
+// This voting contract can act as an Optimistic Oracle, where the results of the getVoteCount function can be used as the ground truth,
+// and acted upon by other contracts. The results are updated by the updateResult function, which takes in a proof that the result is
+// greater than the previous result. The proof is verified by a Verifier contract, which is passed in as a parameter to the createIssue
+// function. The Verifier contract is responsible for verifying the proof, and returning a boolean value. 
 contract AggregateCounts {
     struct candidate {
         uint256 numVoteCount;
