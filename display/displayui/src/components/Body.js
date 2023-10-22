@@ -1,6 +1,10 @@
 /* global BigInt */
 import React from 'react';
+<<<<<<< Updated upstream
 import { Box, Text, VStack, InputGroup, Input, InputLeftAddon, List, ListItem } from '@chakra-ui/react';
+=======
+import { VStack, Box, Text, Flex, InputGroup, Input, InputLeftAddon, List, ListItem } from '@chakra-ui/react';
+>>>>>>> Stashed changes
 import { ethers } from 'ethers';
 import aAggregateCounts from '../artifacts/AggregateCounts.json';
 
@@ -53,21 +57,27 @@ console.log("number of options: ", parts.length - 1);
         setOptions(parts.slice(1));
     }, [issue]);
 
-    return (<VStack spacing={8}>
+    return (<Flex height="100vh" width="100vw" alignItems="center" justifyContent="center">
+        <VStack>
         <Box>
             <InputGroup>
                 <InputLeftAddon color="black" children='Issue' />
                 <Input placeholder='type issue text here' value={issue} onChange={(e) => setIssue(e.target.value)}/>
             </InputGroup>
         </Box>
-        <Box justifySelf>
-            <Text fontSize="6xl" color="tomato">Issue: {title}</Text>
+        <br/>
+        <Box border={1} borderRadius={5} p={5} m={5}>
+            <Text fontSize="2xl" color="tomato">Issue: {title}</Text>
             <List>
+<<<<<<< Updated upstream
                 {options.map((o, i) => <ListItem key={i}><Text fontSize="6xl" color="tomato">{o}: {votes && votes.length>i && votes[i].toString()}</Text></ListItem>)}
+=======
+                {options.map((o, i) => <ListItem key={i}><Text fontSize="2xl" color="tomato">{o}: {votes && votes.length>i && votes[i].toString()}</Text></ListItem>)}
+>>>>>>> Stashed changes
             </List>
-            <Text fontSize="6xl" color="tomato">Block number: {blockNumber}</Text>
         </Box>
-    </VStack>);
+        </VStack>
+    </Flex>);
 }
 
   export default Body;
