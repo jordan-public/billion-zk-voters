@@ -16,7 +16,7 @@ forge script script/Deploy.s.sol:Deploy --legacy --rpc-url "https://rpc.public.z
 source push_artifacts.sh "Deploy.s.sol/1442"
 
 # Mantle Testnet
-forge script script/Deploy.s.sol:Deploy --legacy --rpc-url "https://rpc.testnet.mantle.xyz" --sender $SENDER --private-key $PRIVATE_KEY --broadcast -vvvv
+forge script script/Deploy.s.sol:Deploy --legacy --slow --rpc-url "https://rpc.testnet.mantle.xyz" --sender $SENDER --private-key $PRIVATE_KEY --broadcast -vvvv
 
 source push_artifacts.sh "Deploy.s.sol/5001"
 
