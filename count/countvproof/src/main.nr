@@ -136,3 +136,14 @@ fn main(
     }
     output
 }
+
+#[test]
+fn test_zsmt_member() {
+
+    // Test 1: empty tree - as expected - no hashing at all (otherwise it would be h(0, leaf), h(h(0, leaf), 0), etc.)
+    zsmt_member(0, 0, [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+    // The assertion is inside the function zsmt_member
+
+    // Test 2: one leaf tree - as expected - no hashing at all (otherwise it would be h(1, leaf), h(h(0, leaf), 1), etc.)
+    zsmt_member(1, 1, [1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1, 1], [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0]);
+}
