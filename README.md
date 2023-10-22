@@ -115,7 +115,7 @@ To minimize the number of hashing operations inside of a ZK (or validity) proof 
 
 Previously I have seen representation of the point 2 above as cached values of empty subtrees at different levels, but there is no need for that - 0 suffices.
 
-Point 3 is entirely new and it eliminates the need of hashing in massive subtrees which contain only a single element. This reduces the number of hashes for such cases from $log(subtree size) = subtree height$ to $0$, which is very frequent in the usual usage of Sparse Merkle Trees.
+Point 3 is entirely new and it eliminates the need of hashing in **massive subtrees which contain only a single element**. This reduces the number of hashes for such cases from $log(subtree size) = subtree height$ to $0$, which is very frequent in the usual usage of Sparse Merkle Trees.
 
 ### Scaling by Sharding
 
