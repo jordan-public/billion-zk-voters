@@ -1,3 +1,9 @@
+[This project](https://ethglobal.com/showcase/billionzkvoters-hw1br) won the following prizes at the [ETHGlobal ETHOnline 2023](https://ethglobal.com/events/ethonline2023) hackathon:
+
+🏆 [Aztec — Best Use of Noir](https://ethglobal.com/showcase/billionzkvoters-hw1br)
+
+🏊 [Scroll — Pool Prize](https://ethglobal.com/showcase/billionzkvoters-hw1br)
+
 See demo [here](./demo/README.md).
 
 Installation instructions [here](./HOWTO.md).
